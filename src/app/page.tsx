@@ -177,11 +177,6 @@ export default function Home() {
 
           {/* Photo composition */}
           <div className="rise-in relative" style={{ animationDelay: "0.35s" }}>
-            {/* warm showroom light pool (detail #1) */}
-            <div
-              aria-hidden="true"
-              className="absolute -inset-10 rounded-full bg-[radial-gradient(ellipse_at_66%_38%,rgba(255,206,150,0.16),transparent_58%)] blur-2xl"
-            />
             {/* instrument-cluster dial motif (detail #3) — hero only */}
             <svg
               aria-hidden="true"
@@ -462,37 +457,29 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Trust strip — smoked silver, partner logos + status ── */}
+      {/* ── Trust strip — smoked silver, centred partner logos ──── */}
       <section className="bg-smoked border-y border-white/12">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-5 py-6 sm:flex-row sm:justify-between sm:px-8">
-          <p className="flex items-center gap-2.5 text-sm font-medium text-pearl">
-            {/* living green status light (detail #7) */}
-            <span
-              aria-hidden="true"
-              className="h-2.5 w-2.5 shrink-0 rounded-full bg-trust shadow-[0_0_0_4px_rgba(63,152,87,0.22)]"
-            />
-            Svarar normalt inom en arbetsdag
-          </p>
-          <div className="flex items-center gap-4">
-            <span className="eyebrow hidden text-[0.58rem] text-pearl/55 sm:block">
-              Samarbetspartners
-            </span>
-            <ul className="flex items-center gap-2.5">
+        <div className="mx-auto max-w-6xl px-5 py-9 sm:px-8">
+          <div className="flex flex-col items-center gap-5">
+            <ul className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
               {partnerLogos.map((p) => (
                 <li
                   key={p.name}
-                  className="flex h-8 items-center rounded-md bg-white/90 px-2.5"
+                  className="flex h-14 items-center rounded-lg bg-white/90 px-4"
                 >
                   <Image
                     src={p.src}
                     alt={p.name}
                     width={p.w}
                     height={p.h}
-                    className="max-h-5 w-auto max-w-[76px] object-contain grayscale transition duration-300 hover:grayscale-0"
+                    className="max-h-9 w-auto max-w-[130px] object-contain grayscale transition duration-300 hover:grayscale-0"
                   />
                 </li>
               ))}
             </ul>
+            <span className="eyebrow text-[0.62rem] text-pearl/65">
+              Samarbetspartners
+            </span>
           </div>
         </div>
       </section>

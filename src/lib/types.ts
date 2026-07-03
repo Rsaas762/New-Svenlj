@@ -76,6 +76,8 @@ export interface SellCarLead extends LeadBase {
   fuel?: Fuel | "";
   gearbox?: Gearbox | "";
   condition?: string;
+  /** File names of photos the seller attached (binary upload needs a storage backend). */
+  photoNames?: string[];
 }
 
 /** "Hitta min bil" — someone wants help finding a specific car. */

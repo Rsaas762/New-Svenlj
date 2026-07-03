@@ -1,6 +1,7 @@
 "use client";
 
 import { SelectField, TextAreaField, TextField } from "@/components/ui";
+import { FileField } from "./FileField";
 import {
   LeadFormShell,
   optionalEmail,
@@ -39,6 +40,10 @@ export function SellCarForm() {
         fuel: str(data, "fuel") as never,
         gearbox: str(data, "gearbox") as never,
         condition: str(data, "condition") || undefined,
+        photoNames:
+          (data.getAll("photos") as File[])
+            .filter((f) => f && f.name)
+            .map((f) => f.name) || undefined,
         name: str(data, "name"),
         phone: str(data, "phone"),
         email: str(data, "email") || undefined,
@@ -113,6 +118,12 @@ export function SellCarForm() {
               label="Bilens skick"
               placeholder="Servicehistorik, eventuella skador, extrautrustning…"
               error={errors.condition}
+            />
+            <FileField
+              id="photos"
+              name="photos"
+              label="Bilder på bilen"
+              hint="Lägg gärna till några bilder — det hjälper oss ge en snabbare och mer träffsäker värdering."
             />
           </fieldset>
 
