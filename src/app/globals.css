@@ -1,26 +1,283 @@
 @import "tailwindcss";
 
+/*
+  Svenljunga Bilcenter — DARK AUTOMOTIVE THEME
+  (approved via visual brainstorm 2026-07-03)
+
+  Smoked-titanium heroes, gunmetal informational bands, carbon-fibre
+  cards/footer, a graphite/silver header, and one restrained cognac-leather
+  conversion moment (~3%: focus rings, material seams, the sell CTA).
+  Bright, clean vehicle photography is the only real colour.
+  Typography: Manrope (display) + Instrument Sans (body).
+
+  Token names are kept from the previous theme so components inherit the
+  dark values: `ink` is now the PRIMARY LIGHT text, `muted` the secondary,
+  `mist` a dark hairline, `brand` a neutral silver eyebrow accent. Cognac
+  lives only in the accent + leather utilities.
+*/
+@theme {
+  --color-page: #0c1013; /* deepest background */
+  --color-carbon: #23272b;
+  --color-panel: #1b2025; /* dark content-card surface */
+
+  --color-ink: #eff2f3; /* PRIMARY text (light) */
+  --color-ink-2: #dfe4e7;
+  --color-ink-3: #c4ccd1;
+  --color-muted: #9aa2a8; /* secondary text */
+  --color-fog: #7f888e; /* tertiary / captions */
+
+  --color-mist: #363c42; /* hairline border on dark */
+  --color-brand: #9aa2a8; /* eyebrows / rules (neutral, not cognac) */
+  --color-brand-2: #c6cbcf;
+
+  --color-pearl: #eff2f3; /* light text on dark surfaces */
+  --color-silver: #c6cbcf;
+  --color-silver-mist: #aeb6bc;
+
+  --color-cognac: #c98a5c;
+  --color-cognac-deep: #b77949;
+  --color-cream: #f3e5d4;
+
+  --color-trust: #3f9857; /* living status light */
+  --color-danger: #e06a5f;
+
+  --font-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card: 0 10px 24px -16px rgb(0 0 0 / 0.6);
+  --shadow-card-hover: 0 26px 44px -22px rgb(0 0 0 / 0.7);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+::selection {
+  background: var(--color-cognac);
+  color: #1a1210;
+}
+
+/* Cognac keyboard-focus halo (detail #6) */
+:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-page),
+    0 0 0 4px var(--color-cognac);
+  border-radius: 4px;
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+
+/* Tabular figures for prices / mileage (detail #5) */
+@utility nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Header: graphite / silver gradient (from svenljungabilcenter.se) ── */
+@utility bg-graphite-gradient {
+  background-image: linear-gradient(100deg, #1d2024 0%, #27252d 45%, #4b4d54 100%);
+}
+@utility bg-graphite-gradient-v {
+  background-image: linear-gradient(180deg, #27252d 0%, #1d2024 100%);
+}
+
+/* ── Smoked titanium — hero / page tops (strong texture) ── */
+@utility bg-titanium {
+  background-color: #181c20;
+  background-image:
+    linear-gradient(118deg, transparent 32%, rgba(255, 255, 255, 0.06) 47%, transparent 60%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0 1px, rgba(0, 0, 0, 0.1) 1px 3px),
+    linear-gradient(125deg, #373c42, #181c20 66%, #2b2930);
+}
+/* alias kept so existing PageHero / references inherit the dark hero */
+@utility bg-metal-titanium {
+  background-color: #181c20;
+  background-image:
+    linear-gradient(118deg, transparent 32%, rgba(255, 255, 255, 0.06) 47%, transparent 60%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0 1px, rgba(0, 0, 0, 0.1) 1px 3px),
+    linear-gradient(125deg, #373c42, #181c20 66%, #2b2930);
+}
+
+/* ── Gunmetal — informational bands (softer texture, −18% for text) ── */
+@utility bg-gunmetal {
+  background-color: #262b30;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.012) 0 1px, rgba(0, 0, 0, 0.04) 1px 3px),
+    linear-gradient(140deg, #363c42, #23282d);
+}
+
+/* ── Smoked silver — the trust strip (darker than bright chrome) ── */
+@utility bg-smoked {
+  background-color: #454c53;
+  background-image: linear-gradient(180deg, #3f464c 0%, #565e65 42%, #3b4248 72%, #4a525a 100%);
+}
+
+/* ── Carbon fibre weave — inventory band, cards, footer (−15%) ── */
+@utility bg-carbon {
+  background-color: #20242a;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.032) 0 2px, rgba(0, 0, 0, 0.2) 2px 4px),
+    linear-gradient(160deg, #23282d 0%, #1b1f24 100%);
+}
+
+/* ── Cognac leather — one conversion moment (darkened/desaturated ~10%) ── */
+@utility bg-leather {
+  background-color: #643e22;
+  background-image:
+    radial-gradient(120% 90% at 18% 0%, rgba(255, 255, 255, 0.1), transparent 52%),
+    radial-gradient(1.5px 1.5px at 12% 30%, rgba(0, 0, 0, 0.26), transparent),
+    radial-gradient(1.5px 1.5px at 45% 65%, rgba(0, 0, 0, 0.22), transparent),
+    radial-gradient(1.5px 1.5px at 78% 25%, rgba(0, 0, 0, 0.24), transparent),
+    radial-gradient(1.5px 1.5px at 62% 82%, rgba(0, 0, 0, 0.22), transparent),
+    radial-gradient(1.5px 1.5px at 28% 85%, rgba(0, 0, 0, 0.22), transparent),
+    linear-gradient(135deg, #7d512e, #5c3a20);
+}
+@utility leather-stitch {
+  border: 1.5px dashed rgba(240, 226, 205, 0.42);
+}
+
+/* ── Surfaces ── */
+/* Carbon card (vehicle cards) */
+@utility surface-carbon {
+  background-color: #22272c;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.045) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.035) 0 2px, rgba(0, 0, 0, 0.24) 2px 4px),
+    linear-gradient(150deg, #262b30, #1b1f24);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.5); /* machined edge (detail #2) */
+  box-shadow: 0 14px 28px -16px rgb(0 0 0 / 0.6);
+}
+/* Solid dark panel (content cards, form containers) — alias of former plate names */
+@utility surface-plate {
+  background-color: #1b2025;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.42);
+  box-shadow: 0 14px 28px -18px rgb(0 0 0 / 0.55);
+}
+@utility surface-plate-strong {
+  background-color: #1d2329;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 18px 34px -18px rgb(0 0 0 / 0.6);
+}
+
+/* Machined-silver primary button */
+@utility btn-machined {
+  color: #20252a;
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  background-image: linear-gradient(#f5f7f8, #bdc4c9 58%, #dce1e4);
+  box-shadow: 0 5px 12px rgb(0 0 0 / 0.4), inset 0 1px #fff;
+}
+
+/* Eyebrow label (wide tracking, echoes the wordmark) */
+@utility eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+@utility eyebrow-rule {
+  &::before {
+    content: "";
+    display: inline-block;
+    width: 2rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.5;
+    vertical-align: middle;
+    margin-right: 0.75rem;
+    margin-bottom: 0.2em;
+  }
+}
+
+/* Scroll-triggered reveal */
+@utility reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hero entrance */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@utility rise-in {
+  opacity: 0;
+  animation: rise-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+/* Floating hero card: rise once, then a slow mechanical drift */
+@keyframes hero-float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-6px); }
+}
+@utility float-card {
+  opacity: 0;
+  animation:
+    rise-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards,
+    hero-float 5s 2.2s ease-in-out infinite alternate;
+}
+
+/* Instrument-cluster dial (detail #3) — hero only, drawn once */
+@keyframes draw-arc {
+  from { stroke-dashoffset: 360; }
+  to { stroke-dashoffset: 96; }
+}
+.dial-arc {
+  stroke-dasharray: 360;
+  stroke-dashoffset: 360;
+  animation: draw-arc 1.6s 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .rise-in,
+  .float-card {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  .dial-arc {
+    animation: none;
+    stroke-dashoffset: 96;
+  }
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
 }
