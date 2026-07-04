@@ -459,25 +459,25 @@ export default function Home() {
 
       {/* ── Trust strip — smoked silver, centred partner logos ──── */}
       <section className="bg-smoked border-y border-white/12">
-        <div className="mx-auto max-w-6xl px-5 py-9 sm:px-8">
-          <div className="flex flex-col items-center gap-5">
-            <ul className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
+        <div className="mx-auto max-w-6xl px-5 py-4 sm:px-8">
+          <div className="flex flex-col items-center gap-2.5">
+            <ul className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
               {partnerLogos.map((p) => (
                 <li
                   key={p.name}
-                  className="flex h-14 items-center rounded-lg bg-white/90 px-4"
+                  className="flex h-11 items-center rounded-lg bg-white/90 px-3.5"
                 >
                   <Image
                     src={p.src}
                     alt={p.name}
                     width={p.w}
                     height={p.h}
-                    className="max-h-9 w-auto max-w-[130px] object-contain grayscale transition duration-300 hover:grayscale-0"
+                    className="max-h-7 w-auto max-w-[112px] object-contain grayscale transition duration-300 hover:grayscale-0"
                   />
                 </li>
               ))}
             </ul>
-            <span className="eyebrow text-[0.62rem] text-pearl/65">
+            <span className="eyebrow text-[0.6rem] text-pearl/65">
               Samarbetspartners
             </span>
           </div>
