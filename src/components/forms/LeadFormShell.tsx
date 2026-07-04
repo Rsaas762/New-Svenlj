@@ -15,6 +15,7 @@ export function LeadFormShell({
   buildLead,
   validate,
   submitLabel,
+  submitVariant = "primary",
   successTitle,
   successBody,
   children,
@@ -24,6 +25,9 @@ export function LeadFormShell({
   /** Return a map of field-id → error message; empty map = valid. */
   validate: (data: FormData) => Record<string, string>;
   submitLabel: string;
+  /** Button variant for the submit CTA. Defaults to the machined-silver
+   *  primary; the sell/valuation form uses the one leather moment. */
+  submitVariant?: "primary" | "leather";
   successTitle: string;
   successBody: string;
   children: (errors: Record<string, string>) => ReactNode;
@@ -89,7 +93,10 @@ export function LeadFormShell({
         </p>
         <p className="mt-4 text-sm text-muted">
           Brådskande? Ring oss på{" "}
-          <a href={site.phoneHref} className="font-medium text-brand">
+          <a
+            href={site.phoneHref}
+            className="font-semibold text-silver underline decoration-white/30 underline-offset-2 transition-colors hover:text-cognac hover:decoration-cognac"
+          >
             {site.phone}
           </a>
           .
@@ -112,7 +119,12 @@ export function LeadFormShell({
       )}
 
       <div className="pt-1">
-        <Button type="submit" size="lg" disabled={state === "sending"}>
+        <Button
+          type="submit"
+          size="lg"
+          variant={submitVariant}
+          disabled={state === "sending"}
+        >
           {state === "sending" ? "Skickar…" : submitLabel}
         </Button>
         <p className="mt-3 text-xs leading-relaxed text-muted">

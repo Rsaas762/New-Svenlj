@@ -16,7 +16,8 @@ const GEARBOXES = ["Automat", "Manuell"] as const;
 export function SellCarForm() {
   return (
     <LeadFormShell
-      submitLabel="Skicka in bilen — få en värdering"
+      submitLabel="Få en gratis värdering"
+      submitVariant="leather"
       successTitle="Tack! Din bil är inskickad."
       successBody="Vi går igenom uppgifterna och återkommer med en första bedömning och nästa steg — normalt inom en arbetsdag."
       validate={(data) => {
@@ -24,6 +25,15 @@ export function SellCarForm() {
         requireText(data, "brand", "Ange bilens märke.", errors);
         requireText(data, "model", "Ange bilens modell.", errors);
         requireText(data, "year", "Ange årsmodell.", errors, 4);
+        const year = Number(str(data, "year"));
+        if (
+          !errors.year &&
+          (!Number.isInteger(year) ||
+            year < 1950 ||
+            year > new Date().getFullYear() + 1)
+        ) {
+          errors.year = "Ange ett giltigt årtal, t.ex. 2019.";
+        }
         requireText(data, "mileage", "Ange mätarställning i mil.", errors, 1);
         requireText(data, "name", "Ange ditt namn.", errors);
         requirePhone(data, "phone", errors);
@@ -37,8 +47,8 @@ export function SellCarForm() {
         model: str(data, "model"),
         year: str(data, "year"),
         mileageMil: str(data, "mileage"),
-        fuel: str(data, "fuel") as never,
-        gearbox: str(data, "gearbox") as never,
+        fuel: (str(data, "fuel") || "") as (typeof FUELS)[number] | "",
+        gearbox: (str(data, "gearbox") || "") as (typeof GEARBOXES)[number] | "",
         condition: str(data, "condition") || undefined,
         photoNames:
           (data.getAll("photos") as File[])
@@ -123,7 +133,7 @@ export function SellCarForm() {
               id="photos"
               name="photos"
               label="Bilder på bilen"
-              hint="Lägg gärna till några bilder — det hjälper oss ge en snabbare och mer träffsäker värdering."
+              hint="Har du bilder? Nämn det gärna här — så hämtar vi in dem när vi hörts av, för en mer träffsäker värdering."
             />
           </fieldset>
 

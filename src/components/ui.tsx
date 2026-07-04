@@ -20,6 +20,8 @@ const btnStyles = {
   // Ghost on dark: light hairline, brightens on hover
   outline: `${btnBase} border border-white/25 bg-white/[0.04] text-pearl hover:border-white/45 hover:bg-white/[0.09]`,
   outlineOnDark: `${btnBase} border border-pearl/40 text-pearl hover:border-silver hover:text-silver`,
+  // Cognac leather: the ONE warm conversion moment (sell/valuation CTA only)
+  leather: `${btnBase} bg-leather text-cream border border-cognac-deep/50 shadow-card hover:brightness-110 active:translate-y-px`,
 } as const;
 
 const btnSizes = {
@@ -70,7 +72,7 @@ export function Button({
 // ── Form fields ──────────────────────────────────────────────────────
 
 const fieldBase =
-  "w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-[0.95rem] text-ink placeholder:text-fog transition-colors focus:border-cognac focus:bg-white/[0.08] focus:outline-none focus:ring-2 focus:ring-cognac/30";
+  "w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-[0.95rem] text-ink placeholder:text-muted transition-colors focus:border-cognac focus:bg-white/[0.08] focus:outline-none focus:ring-2 focus:ring-cognac/30";
 
 function FieldWrap({
   id,
@@ -105,7 +107,11 @@ function FieldWrap({
       {children}
       {hint && !error && <p className="mt-1.5 text-xs text-muted">{hint}</p>}
       {error && (
-        <p id={`${id}-fel`} className="mt-1.5 text-xs font-medium text-danger">
+        <p
+          id={`${id}-fel`}
+          role="alert"
+          className="mt-1.5 text-xs font-medium text-danger"
+        >
           {error}
         </p>
       )}

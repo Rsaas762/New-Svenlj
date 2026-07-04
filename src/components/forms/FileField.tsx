@@ -63,7 +63,7 @@ export function FileField({
             ? `${files.length} ${files.length === 1 ? "bild" : "bilder"} vald${files.length === 1 ? "" : "a"}`
             : "Dra hit bilder eller klicka för att välja"}
         </span>
-        <span className="text-xs text-fog">JPG eller PNG</span>
+        <span className="text-xs text-muted">JPG eller PNG</span>
         <input
           id={id}
           name={name}
