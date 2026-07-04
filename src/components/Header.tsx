@@ -16,6 +16,8 @@ const desktopNav = [
   { href: "/kontakt", label: "Kontakt" },
 ] as const;
 
+const adminPreviewHref = "/admin-preview/integrationer";
+
 /**
  * Always-dark header bar with the site's signature graphite gradient
  * (from svenljungabilcenter.se), so the silver-gradient logo sits on
@@ -41,8 +43,10 @@ export function Header() {
     };
   }, [open]);
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isActive = (href: string) => {
+    if (href === adminPreviewHref) return pathname.startsWith("/admin-preview");
+    return href === "/" ? pathname === "/" : pathname.startsWith(href);
+  };
 
   return (
     <header
@@ -55,7 +59,7 @@ export function Header() {
 
         {/* Desktop nav — short labels, generous spacing */}
         <nav aria-label="Huvudmeny" className="hidden lg:block">
-          <ul className="flex items-center gap-9">
+          <ul className="flex items-center gap-5 xl:gap-8">
             {desktopNav.map((item) => (
               <li key={item.href}>
                 <Link
@@ -71,13 +75,28 @@ export function Header() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link
+                href={adminPreviewHref}
+                aria-current={isActive(adminPreviewHref) ? "page" : undefined}
+                className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[0.82rem] font-semibold transition-colors ${
+                  isActive(adminPreviewHref)
+                    ? "border-cognac/60 bg-cognac/12 text-white"
+                    : "border-white/15 bg-white/[0.04] text-pearl/80 hover:border-cognac/45 hover:text-white"
+                }`}
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-cognac" aria-hidden="true" />
+                <span>Admin</span>
+                <span className="hidden rounded-full bg-white/[0.08] px-1.5 py-0.5 text-[0.58rem] uppercase tracking-[0.12em] text-silver xl:inline">Preview</span>
+              </Link>
+            </li>
           </ul>
         </nav>
 
         <div className="hidden lg:block">
           <Link
             href="/salj-din-bil"
-            className="btn-machined rounded-full px-6 py-2.5 text-[0.9rem] font-semibold text-[#20252a] transition-all hover:brightness-105"
+            className="btn-machined rounded-full px-6 py-2.5 text-[0.9rem] font-semibold text-[#20252a] transition-[filter,transform,box-shadow] duration-200 hover:brightness-105"
           >
             Sälj din bil
           </Link>
@@ -129,7 +148,7 @@ export function Header() {
               <li
                 key={item.href}
                 style={{ transitionDelay: open ? `${80 + i * 45}ms` : "0ms" }}
-                className={`transition-all duration-500 ${
+                className={`transition-[opacity,transform] duration-500 ${
                   open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
                 }`}
               >
@@ -145,9 +164,28 @@ export function Header() {
                 </Link>
               </li>
             ))}
+            <li
+              style={{ transitionDelay: open ? `${80 + navigation.length * 45}ms` : "0ms" }}
+              className={`mt-4 border-t border-white/15 pt-4 transition-[opacity,transform] duration-500 ${
+                open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              }`}
+            >
+              <Link
+                href={adminPreviewHref}
+                onClick={() => setOpen(false)}
+                aria-current={isActive(adminPreviewHref) ? "page" : undefined}
+                className={`font-display flex items-center gap-3 py-2 text-2xl font-medium tracking-tight ${
+                  isActive(adminPreviewHref) ? "text-[#e8b58f]" : "text-pearl"
+                }`}
+              >
+                <span className="h-2 w-2 rounded-full bg-cognac" aria-hidden="true" />
+                <span>Admin</span>
+                <span className="rounded-full border border-cognac/30 bg-cognac/10 px-2 py-1 font-sans text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[#e8b58f]">Preview</span>
+              </Link>
+            </li>
           </ul>
           <div
-            className={`mt-10 border-t border-pearl/15 pt-8 transition-all delay-300 duration-500 ${
+            className={`mt-10 border-t border-pearl/15 pt-8 transition-[opacity,transform] delay-300 duration-500 ${
               open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
             }`}
           >
