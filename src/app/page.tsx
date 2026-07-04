@@ -155,7 +155,7 @@ export default function Home() {
             </div>
 
             <ul
-              className="rise-in mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/12 pt-6"
+              className="rise-in mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/10 pt-6"
               style={{ animationDelay: "0.65s" }}
               aria-label="Det här hjälper vi dig med"
             >
@@ -186,7 +186,7 @@ export default function Home() {
               <path
                 d="M30 168 A 82 82 0 1 1 170 168"
                 fill="none"
-                stroke="#aeb6bc"
+                stroke="var(--color-silver-mist)"
                 strokeWidth="1.5"
                 pathLength={360}
                 className="opacity-40"
@@ -194,7 +194,7 @@ export default function Home() {
               <path
                 d="M30 168 A 82 82 0 1 1 170 168"
                 fill="none"
-                stroke="#c98a5c"
+                stroke="var(--color-cognac)"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 pathLength={360}
@@ -205,14 +205,14 @@ export default function Home() {
                 y1="150"
                 x2="150"
                 y2="86"
-                stroke="#dfe4e7"
+                stroke="var(--color-ink-2)"
                 strokeWidth="1.5"
                 className="opacity-70"
               />
-              <circle cx="100" cy="150" r="4" fill="#dfe4e7" className="opacity-70" />
+              <circle cx="100" cy="150" r="4" fill="var(--color-ink-2)" className="opacity-70" />
             </svg>
 
-            <div className="relative aspect-[5/4] overflow-hidden rounded-3xl border border-white/12 shadow-card-hover">
+            <div className="relative aspect-[5/4] overflow-hidden rounded-3xl border border-white/10 shadow-card-hover">
               <HeroSlideshow slides={heroSlides} />
               <span className="nums absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-3.5 py-1.5 text-xs font-medium text-pearl backdrop-blur-md">
                 <svg
@@ -458,7 +458,7 @@ export default function Home() {
       </section>
 
       {/* ── Trust strip — smoked silver, centred partner logos ──── */}
-      <section className="bg-smoked border-y border-white/12">
+      <section className="bg-smoked border-y border-white/10">
         <div className="mx-auto max-w-6xl px-5 py-4 sm:px-8">
           <div className="flex flex-col items-center gap-2.5">
             <ul className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { Car } from "@/lib/types";
 import { CarCard } from "./CarCard";
+import { LinkButton } from "./ui";
 
 type Sort = "nyast" | "pris-lag" | "pris-hog" | "mil-lag";
 
@@ -10,7 +11,7 @@ const PRICE_STEPS = [100000, 150000, 200000, 250000, 300000];
 const sekFmt = new Intl.NumberFormat("sv-SE");
 
 const selectCls =
-  "w-full appearance-none rounded-xl border border-white/15 bg-white/[0.05] px-3.5 py-2.5 pr-9 text-sm text-ink transition-colors focus:border-cognac focus:outline-none focus:ring-2 focus:ring-cognac/30 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%228%22%3E%3Cpath%20d%3D%22M1%201l5%205%205-5%22%20stroke%3D%22%239aa2a8%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22/%3E%3C/svg%3E')] bg-[position:right_0.9rem_center] bg-no-repeat";
+  "w-full min-h-[44px] appearance-none rounded-xl border border-white/15 bg-white/[0.05] px-3.5 py-3 pr-9 text-sm text-ink transition-colors focus:border-cognac focus:outline-none focus:ring-2 focus:ring-cognac/30 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%228%22%3E%3Cpath%20d%3D%22M1%201l5%205%205-5%22%20stroke%3D%22%239aa2a8%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22/%3E%3C/svg%3E')] bg-[position:right_0.9rem_center] bg-no-repeat";
 
 export function CarListing({ cars }: { cars: Car[] }) {
   const [brand, setBrand] = useState("");
@@ -66,9 +67,9 @@ export function CarListing({ cars }: { cars: Car[] }) {
 
   return (
     <div>
-      {/* Filter bar */}
+      {/* Filter bar — five narrowing filters (Sortera lives by the result count) */}
       <div className="surface-plate rounded-2xl p-4 sm:p-5">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           <div>
             <label htmlFor="filter-marke" className="mb-1 block text-xs font-medium text-muted">
               Märke
@@ -160,42 +161,65 @@ export function CarListing({ cars }: { cars: Car[] }) {
               <option value="Manuell">Manuell</option>
             </select>
           </div>
-
-          <div>
-            <label htmlFor="sortering" className="mb-1 block text-xs font-medium text-muted">
-              Sortera
-            </label>
-            <select
-              id="sortering"
-              value={sort}
-              onChange={(e) => setSort(e.target.value as Sort)}
-              className={selectCls}
-            >
-              <option value="nyast">Nyast först</option>
-              <option value="pris-lag">Lägst pris</option>
-              <option value="pris-hog">Högst pris</option>
-              <option value="mil-lag">Lägst miltal</option>
-            </select>
-          </div>
         </div>
       </div>
 
-      {/* Result count + clear */}
-      <div className="mt-6 flex items-center justify-between gap-4">
+      {/* Trust cue — bring the "genomgången, en riktig människa" promise to where buyers decide */}
+      <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted">
+        <span className="inline-flex items-center gap-2">
+          <svg
+            aria-hidden="true"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-cognac)"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+          Alla bilar genomgångna innan försäljning
+        </span>
+        <span className="inline-flex items-center gap-2">
+          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-trust" />
+          Svar av en människa, inte en växel
+        </span>
+      </div>
+
+      {/* Result count + sort + clear */}
+      <div className="mt-5 flex flex-col gap-3 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-muted" role="status">
           {filtered.length === 1
             ? "1 bil matchar"
             : `${filtered.length} bilar matchar`}
         </p>
-        {hasFilters && (
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="text-sm font-medium text-brand underline-offset-4 hover:underline"
+        <div className="flex flex-wrap items-center gap-3">
+          <label htmlFor="sortering" className="text-xs font-medium text-muted">
+            Sortera
+          </label>
+          <select
+            id="sortering"
+            value={sort}
+            onChange={(e) => setSort(e.target.value as Sort)}
+            className={`${selectCls} w-auto min-w-[10rem]`}
           >
-            Rensa filter
-          </button>
-        )}
+            <option value="nyast">Nyast först</option>
+            <option value="pris-lag">Lägst pris</option>
+            <option value="pris-hog">Högst pris</option>
+            <option value="mil-lag">Lägst miltal</option>
+          </select>
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="inline-flex min-h-[44px] items-center rounded-full border border-white/20 px-4 text-sm font-medium text-silver transition-colors hover:border-white/40 hover:text-pearl"
+            >
+              Rensa filter
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Grid / empty state */}
@@ -215,16 +239,13 @@ export function CarListing({ cars }: { cars: Car[] }) {
             utkik och hör av oss när rätt bil dyker upp.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <a
-              href="/hitta-min-bil"
-              className="inline-flex items-center rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-2"
-            >
+            <LinkButton href="/hitta-min-bil" variant="primary">
               Be oss hitta din bil
-            </a>
+            </LinkButton>
             <button
               type="button"
               onClick={clearFilters}
-              className="inline-flex items-center rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-pearl transition-colors hover:border-white/45"
+              className="inline-flex min-h-[44px] items-center rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-pearl transition-colors hover:border-white/45"
             >
               Rensa filter
             </button>

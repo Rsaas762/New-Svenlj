@@ -22,6 +22,8 @@ export function HeroSlideshow({
 }) {
   const [index, setIndex] = useState(0);
   const [reduced, setReduced] = useState(false);
+  // Explicit play/pause (WCAG 2.2.2) — persists across hover, unlike the ref.
+  const [playing, setPlaying] = useState(true);
   const paused = useRef(false);
 
   useEffect(() => {
@@ -33,12 +35,14 @@ export function HeroSlideshow({
   }, []);
 
   useEffect(() => {
-    if (reduced || slides.length <= 1) return;
+    if (reduced || slides.length <= 1 || !playing) return;
     const id = window.setInterval(() => {
       if (!paused.current) setIndex((i) => (i + 1) % slides.length);
     }, intervalMs);
     return () => window.clearInterval(id);
-  }, [reduced, slides.length, intervalMs]);
+  }, [reduced, slides.length, intervalMs, playing]);
+
+  const autoplays = !reduced && slides.length > 1;
 
   return (
     <div
@@ -95,9 +99,9 @@ export function HeroSlideshow({
         </p>
       )}
 
-      {/* pagination dots */}
+      {/* pagination dots + play/pause */}
       {slides.length > 1 && (
-        <div className="absolute bottom-5 right-5 flex items-center gap-2">
+        <div className="absolute bottom-2.5 right-2.5 flex items-center">
           {slides.map((slide, i) => (
             <button
               key={slide.src}
@@ -105,13 +109,36 @@ export function HeroSlideshow({
               onClick={() => setIndex(i)}
               aria-label={`Visa bild ${i + 1} av ${slides.length}`}
               aria-current={i === index}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i === index
-                  ? "w-6 bg-pearl"
-                  : "w-2 bg-pearl/50 hover:bg-pearl/80"
-              }`}
-            />
+              className="grid h-11 w-8 place-items-center"
+            >
+              <span
+                aria-hidden="true"
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  i === index ? "w-6 bg-pearl" : "w-2 bg-pearl/50 hover:bg-pearl/80"
+                }`}
+              />
+            </button>
           ))}
+          {autoplays && (
+            <button
+              type="button"
+              onClick={() => setPlaying((p) => !p)}
+              aria-label={playing ? "Pausa bildspelet" : "Spela bildspelet"}
+              aria-pressed={!playing}
+              className="ml-0.5 grid h-11 w-11 place-items-center text-pearl/70 transition-colors hover:text-pearl"
+            >
+              {playing ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <rect x="6" y="5" width="4" height="14" rx="1" />
+                  <rect x="14" y="5" width="4" height="14" rx="1" />
+                </svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              )}
+            </button>
+          )}
         </div>
       )}
     </div>

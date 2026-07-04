@@ -249,6 +249,12 @@ h4 {
     hero-float 5s 2.2s ease-in-out infinite alternate;
 }
 
+/* Hero slideshow Ken Burns — slow zoom/drift on the active slide */
+@keyframes hero-kenburns {
+  from { transform: scale(1.005) translate3d(0, 0, 0); }
+  to { transform: scale(1.06) translate3d(-1.2%, -0.8%, 0); }
+}
+
 /* Instrument-cluster dial (detail #3) — hero only, drawn once */
 @keyframes draw-arc {
   from { stroke-dashoffset: 360; }
