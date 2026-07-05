@@ -72,7 +72,7 @@ export function Button({
 // ── Form fields ──────────────────────────────────────────────────────
 
 const fieldBase =
-  "w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-[0.95rem] text-ink placeholder:text-muted transition-colors focus:border-cognac focus:bg-white/[0.08] focus:outline-none focus:ring-2 focus:ring-cognac/30";
+  "w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-[0.95rem] text-ink placeholder:text-muted transition-colors focus:border-cognac focus:bg-white/[0.08] focus:outline-none focus:ring-2 focus:ring-cognac/60";
 
 function FieldWrap({
   id,
@@ -94,10 +94,13 @@ function FieldWrap({
       <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-ink">
         {label}
         {required ? (
-          <span className="text-cognac" aria-hidden="true">
-            {" "}
-            *
-          </span>
+          <>
+            <span className="text-cognac" aria-hidden="true">
+              {" "}
+              *
+            </span>
+            <span className="sr-only"> (obligatoriskt)</span>
+          </>
         ) : (
           <span className="ml-1 text-xs font-normal text-muted">
             (valfritt)
@@ -125,6 +128,8 @@ export function TextField({
   error,
   hint,
   required,
+  type,
+  inputMode,
   ...props
 }: InputHTMLAttributes<HTMLInputElement> & {
   id: string;
@@ -132,10 +137,16 @@ export function TextField({
   error?: string;
   hint?: string;
 }) {
+  // Give tel/email fields the right mobile keyboard without each form repeating it.
+  const resolvedInputMode =
+    inputMode ??
+    (type === "tel" ? "tel" : type === "email" ? "email" : undefined);
   return (
     <FieldWrap id={id} label={label} required={required} error={error} hint={hint}>
       <input
         id={id}
+        type={type}
+        inputMode={resolvedInputMode}
         required={required}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-fel` : undefined}

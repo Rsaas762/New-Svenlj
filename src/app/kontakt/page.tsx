@@ -45,7 +45,7 @@ export default function KontaktPage() {
                 </a>
                 <a
                   href={site.emailHref}
-                  className="mt-1.5 block text-sm text-muted hover:text-brand"
+                  className="mt-0.5 inline-flex min-h-11 items-center text-sm text-muted transition-colors hover:text-silver"
                 >
                   {site.email}
                 </a>
@@ -66,7 +66,7 @@ export default function KontaktPage() {
                   href={site.mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 inline-block text-sm font-medium text-brand underline-offset-4 hover:underline"
+                  className="mt-1.5 inline-flex min-h-11 items-center text-sm font-medium text-silver underline-offset-4 hover:underline"
                 >
                   Vägbeskrivning ↗
                 </a>
@@ -106,7 +106,7 @@ export default function KontaktPage() {
                 <svg
                   aria-hidden="true"
                   viewBox="0 0 400 160"
-                  className="absolute inset-0 h-full w-full opacity-[0.12]"
+                  className="absolute inset-0 h-full w-full opacity-[0.16]"
                   preserveAspectRatio="xMidYMid slice"
                 >
                   <path

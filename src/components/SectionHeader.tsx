@@ -7,7 +7,7 @@ export function SectionHeader({
   onDark = false,
   align = "left",
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   intro?: string;
   onDark?: boolean;
@@ -17,13 +17,15 @@ export function SectionHeader({
     <Reveal
       className={`max-w-2xl ${align === "center" ? "mx-auto text-center" : ""}`}
     >
-      <p
-        className={`eyebrow ${align === "left" ? "eyebrow-rule" : ""} ${
-          onDark ? "text-silver" : "text-brand"
-        }`}
-      >
-        {eyebrow}
-      </p>
+      {eyebrow && (
+        <p
+          className={`eyebrow ${align === "left" ? "eyebrow-rule" : ""} ${
+            onDark ? "text-silver" : "text-brand"
+          }`}
+        >
+          {eyebrow}
+        </p>
+      )}
       <h2
         className={`font-display mt-3 text-[2rem] font-semibold leading-[1.12] text-balance sm:text-[2.5rem] ${
           onDark ? "text-pearl" : "text-ink"

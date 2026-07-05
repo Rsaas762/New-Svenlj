@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import type { LeadInput } from "@/lib/types";
 import { site } from "@/lib/site";
 import { Button } from "@/components/ui";
@@ -35,6 +35,12 @@ export function LeadFormShell({
   const [state, setState] = useState<FormState>("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string>("");
+  const successRef = useRef<HTMLDivElement>(null);
+
+  // Move focus to the confirmation so screen-reader + keyboard users land on it.
+  useEffect(() => {
+    if (state === "sent") successRef.current?.focus();
+  }, [state]);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -76,8 +82,10 @@ export function LeadFormShell({
   if (state === "sent") {
     return (
       <div
+        ref={successRef}
         role="status"
-        className="rounded-2xl border border-trust/40 bg-trust/10 p-8 text-center backdrop-blur-sm"
+        tabIndex={-1}
+        className="rounded-2xl border border-trust/40 bg-trust/10 p-8 text-center backdrop-blur-sm focus:outline-none"
       >
         <span
           aria-hidden="true"
@@ -124,6 +132,7 @@ export function LeadFormShell({
           size="lg"
           variant={submitVariant}
           disabled={state === "sending"}
+          className="w-full sm:w-auto"
         >
           {state === "sending" ? "Skickar…" : submitLabel}
         </Button>

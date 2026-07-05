@@ -151,7 +151,8 @@ warm cognac accent and one living-green status dot.
 - **Ink** (`#eff2f3`): Primary body and heading text. **Ink-2 / Ink-3**
   (`#dfe4e7` / `#c4ccd1`): stepped-down headings and strong secondary text.
 - **Muted** (`#9aa2a8`): Secondary text and neutral eyebrows/rules — *not* cognac.
-- **Fog** (`#7f888e`): Tertiary text, captions, placeholders (still ≥4.5:1 on dark).
+- **Fog** (`#7f888e`): Tertiary text and captions. Not for form placeholders — at
+  ~3.8:1 on the field surface it misses AA; placeholders use **Muted** instead.
 - **Mist** (`#363c42`): Hairline borders and dividers on dark surfaces.
 
 ### Named Rules
@@ -241,7 +242,7 @@ is metal catching light, not a drop shadow.
 
 ### Inputs / Fields
 - **Style:** `bg-white/[0.05]` on a `border-white/15` hairline, `rounded-xl`,
-  light `ink` text, `fog` placeholder.
+  light `ink` text, `muted` placeholder (AA-safe, ≥4.5:1).
 - **Focus:** Border shifts to `cognac`, background lifts to `bg-white/[0.08]`,
   plus the global cognac focus ring. Required asterisk is cognac.
 - **Error:** `border-danger` (`#e06a5f`) with a described error message below.
