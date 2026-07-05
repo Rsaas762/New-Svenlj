@@ -18,6 +18,7 @@ import type { Car } from "./types";
 export const cars: Car[] = [
   {
     slug: "volvo-v90-2020",
+    inspectedUntil: "2027-01-31",
     brand: "Volvo",
     model: "V90",
     variant: "T8 Twin Engine AWD Geartronic Momentum Euro 6 Panorama",
@@ -47,6 +48,7 @@ export const cars: Car[] = [
   },
   {
     slug: "volkswagen-arteon-2019",
+    inspectedUntil: "2027-04-30",
     brand: "Volkswagen",
     model: "Arteon",
     variant: "2.0 TDI DPF SCR 4Motion GT R-Line Euro 6 Taklucka, Drag",
@@ -76,6 +78,7 @@ export const cars: Car[] = [
   },
   {
     slug: "volkswagen-tiguan-allspace-2019",
+    inspectedUntil: "2026-11-30",
     brand: "Volkswagen",
     model: "Tiguan Allspace",
     variant: "Allspace 2.0 TDI 4Motion R-Line Euro 6 Cockpit, Värmare",
@@ -160,6 +163,7 @@ export const cars: Car[] = [
   },
   {
     slug: "fiat-500-2019",
+    inspectedUntil: "2026-11-30",
     brand: "Fiat",
     model: "500",
     variant: "1.2 Pano, Sensorer, Farthållare,Ny kamrem",
@@ -299,6 +303,7 @@ export const cars: Car[] = [
   },
   {
     slug: "volkswagen-amarok-2016",
+    inspectedUntil: "2026-09-30",
     brand: "Volkswagen",
     model: "Amarok",
     variant: "DoubleCab 2.8t 2.0 BiTDI 4Motion Highline",

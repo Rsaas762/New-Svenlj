@@ -40,6 +40,12 @@ export interface Car {
   features: string[];
   /** Link to the car's live Blocket ad (inventory is synced from Blocket). */
   blocketUrl?: string;
+  /**
+   * Inspection valid-until date (besiktigad t.o.m.), ISO `YYYY-MM-DD`.
+   * Only set from a real date stated in the listing; omit when unknown —
+   * never guess. Surfaced as a trust field on the detail page.
+   */
+  inspectedUntil?: string;
   /** Set false to keep a sold car's page alive but out of listings. */
   inStock: boolean;
 }

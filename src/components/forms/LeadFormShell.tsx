@@ -154,7 +154,9 @@ export function requirePhone(
   errors: Record<string, string>,
 ) {
   const value = String(data.get(id) ?? "").trim();
-  if (!/^[+\d][\d\s()-]{5,}$/.test(value)) {
+  const digits = value.replace(/\D/g, "");
+  // Shape check plus a real digit count so "+-----" style junk is caught.
+  if (!/^[+\d][\d\s()-]{5,}$/.test(value) || digits.length < 6) {
     errors[id] = "Ange ett giltigt telefonnummer.";
   }
 }

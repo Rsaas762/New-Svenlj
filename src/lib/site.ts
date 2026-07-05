@@ -43,13 +43,11 @@ export const site = {
     warranty: "GarantiPartner",
   },
 
-  // ── Opening hours (NOT PUBLISHED — confirm with the dealership) ────
-  // The dealership doesn't list opening hours online. Left bracketed so
-  // it's obvious they're unconfirmed; ring-ahead copy is used meanwhile.
+  // ── Opening hours (confirmed with the dealership 2026-07-05) ──────
   hours: [
-    { days: "Måndag–Fredag", time: "[ÖPPETTIDER]" },
-    { days: "Lördag", time: "[ÖPPETTIDER]" },
-    { days: "Söndag", time: "Stängt" },
+    { days: "Måndag–Fredag", time: "09:00–18:00" },
+    { days: "Lördag", time: "10:00–14:00" },
+    { days: "Söndag", time: "10:00–14:00" },
   ],
 
   // ── Trust figures (NOT PUBLISHED — confirm before showing) ────────
