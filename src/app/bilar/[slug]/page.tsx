@@ -266,7 +266,7 @@ export default async function CarDetailPage({ params }: Props) {
 
       {/* Mobile sticky action bar — keeps price + the primary action reachable
           one-handed throughout the scroll. Hidden on lg where the rail sticks. */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-page/95 px-4 py-3 backdrop-blur-md lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-page/95 px-4 py-3 backdrop-blur-md lg:hidden">
         <div className="mx-auto flex max-w-6xl items-center gap-3">
           <div className="min-w-0">
             <p className="nums whitespace-nowrap font-display text-lg font-semibold text-pearl">
