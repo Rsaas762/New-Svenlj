@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Car } from "@/lib/types";
 import { CarCard } from "./CarCard";
 import { LinkButton } from "./ui";
@@ -20,6 +20,42 @@ export function CarListing({ cars }: { cars: Car[] }) {
   const [fuel, setFuel] = useState("");
   const [gearbox, setGearbox] = useState("");
   const [sort, setSort] = useState<Sort>("nyast");
+  // `hydrated` gates the URL-sync effect so it never wipes params before the
+  // initial read has restored them from the URL.
+  const [hydrated, setHydrated] = useState(false);
+
+  // Restore filters from the URL on mount (deep-links, refresh, back).
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    setBrand(p.get("marke") ?? "");
+    setMaxPrice(p.get("pris") ?? "");
+    setMinYear(p.get("ar") ?? "");
+    setFuel(p.get("drivmedel") ?? "");
+    setGearbox(p.get("vaxel") ?? "");
+    const s = p.get("sort");
+    if (s === "pris-lag" || s === "pris-hog" || s === "mil-lag") setSort(s);
+    setHydrated(true);
+  }, []);
+
+  // Reflect the active filters back into the URL so a filtered view is
+  // shareable, bookmarkable, and survives refresh. replaceState (not push)
+  // keeps history clean — we don't want a back-entry per keystroke.
+  useEffect(() => {
+    if (!hydrated) return;
+    const p = new URLSearchParams();
+    if (brand) p.set("marke", brand);
+    if (maxPrice) p.set("pris", maxPrice);
+    if (minYear) p.set("ar", minYear);
+    if (fuel) p.set("drivmedel", fuel);
+    if (gearbox) p.set("vaxel", gearbox);
+    if (sort !== "nyast") p.set("sort", sort);
+    const qs = p.toString();
+    window.history.replaceState(
+      null,
+      "",
+      qs ? `${window.location.pathname}?${qs}` : window.location.pathname,
+    );
+  }, [hydrated, brand, maxPrice, minYear, fuel, gearbox, sort]);
 
   const brands = useMemo(
     () => [...new Set(cars.map((c) => c.brand))].sort(),
@@ -224,7 +260,7 @@ export function CarListing({ cars }: { cars: Car[] }) {
 
       {/* Grid / empty state */}
       {filtered.length > 0 ? (
-        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((car, i) => (
             <CarCard key={car.slug} car={car} priority={i < 3} />
           ))}

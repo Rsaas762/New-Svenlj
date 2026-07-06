@@ -11,10 +11,10 @@ export function PageHero({
   intro?: string;
 }) {
   return (
-    <div className="bg-metal-titanium border-b border-white/30">
+    <div className="bg-titanium border-b border-white/10">
       <div className="mx-auto max-w-6xl px-4 pb-12 pt-28 sm:px-6 lg:pb-16 lg:pt-36">
         <Reveal>
-          <p className="eyebrow eyebrow-rule text-brand">{eyebrow}</p>
+          <p className="eyebrow eyebrow-rule text-silver">{eyebrow}</p>
           <h1 className="font-display mt-3 max-w-3xl text-[2.25rem] font-semibold leading-[1.08] text-balance text-ink sm:text-[3rem]">
             {title}
           </h1>
