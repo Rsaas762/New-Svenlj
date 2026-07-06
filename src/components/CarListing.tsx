@@ -219,7 +219,7 @@ export function CarListing({ cars }: { cars: Car[] }) {
           Alla bilar genomgångna innan försäljning
         </span>
         <span className="inline-flex items-center gap-2">
-          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-trust" />
+          <span aria-hidden="true" className="pulse-live h-1.5 w-1.5 rounded-full bg-trust" />
           Svar av en människa, inte en växel
         </span>
       </div>

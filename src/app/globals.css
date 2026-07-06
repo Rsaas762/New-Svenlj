@@ -354,6 +354,22 @@ h4 {
   animation: instr-redline-in 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) 1.15s both;
 }
 
+/* Living status light — the green trust dots gently breathe (the token is
+   literally the "living status light"). Reinforces "a real person answers". */
+@keyframes pulse-live {
+  0%, 100% {
+    opacity: 0.6;
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-trust) 55%, transparent);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 9px 1px color-mix(in srgb, var(--color-trust) 60%, transparent);
+  }
+}
+@utility pulse-live {
+  animation: pulse-live 2.4s ease-in-out infinite;
+}
+
 /* Hero entrance */
 @keyframes rise-in {
   from { opacity: 0; transform: translateY(22px); }
@@ -407,7 +423,8 @@ h4 {
     stroke-dashoffset: 96;
   }
   .instr-ruler,
-  .instr-redline {
+  .instr-redline,
+  .pulse-live {
     animation: none;
   }
   html {
@@ -417,4 +434,30 @@ h4 {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Slim charcoal/silver scrollbar on pointer devices — keeps the dark showroom
+   mood on desktop; mobile keeps its native overlay bar. */
+@media (pointer: fine) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #39414a transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #454d55, #2b3137);
+    border-radius: 9px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #545d66, #363d44);
+    background-clip: padding-box;
+  }
 }

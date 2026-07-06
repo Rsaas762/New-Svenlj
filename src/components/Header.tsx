@@ -65,10 +65,10 @@ export function Header() {
                 <Link
                   href={item.href}
                   aria-current={isActive(item.href) ? "page" : undefined}
-                  className={`text-[0.9rem] font-medium transition-colors hover:text-white ${
+                  className={`text-[0.9rem] font-medium underline-offset-8 transition-colors hover:text-white ${
                     isActive(item.href)
-                      ? "text-white underline decoration-silver/60 underline-offset-8"
-                      : "text-pearl/75"
+                      ? "text-white underline decoration-cognac decoration-2"
+                      : "text-pearl/75 decoration-transparent hover:underline hover:decoration-cognac/40"
                   }`}
                 >
                   {item.label}

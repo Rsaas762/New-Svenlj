@@ -61,6 +61,15 @@ export function CarGallery({
           sizes="(max-width: 1024px) 100vw, 60vw"
           className="object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.03]"
         />
+        {/* soft grounding shadow at the base so the car sits in showroom light */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 via-black/10 to-transparent"
+        />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/10"
+        />
         {sold && (
           <span className="absolute left-4 top-4 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-pearl backdrop-blur-sm">
             Såld
@@ -160,6 +169,27 @@ export function CarGallery({
             </button>
           </div>
         </div>
+
+        {count > 1 && (
+          <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+            {images.map((src, i) => (
+              <button
+                type="button"
+                key={`thumb-${src}-${i}`}
+                onClick={() => setActive(i)}
+                aria-label={`Visa bild ${i + 1} av ${count}`}
+                aria-current={i === active ? "true" : undefined}
+                className={`relative aspect-[16/10] h-14 shrink-0 overflow-hidden rounded-lg transition focus-visible:outline-none ${
+                  i === active
+                    ? "ring-2 ring-cognac"
+                    : "opacity-55 hover:opacity-100"
+                }`}
+              >
+                <Image src={src} alt="" fill sizes="90px" className="object-cover" />
+              </button>
+            ))}
+          </div>
+        )}
       </dialog>
     </>
   );

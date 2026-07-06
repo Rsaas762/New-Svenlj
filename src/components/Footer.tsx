@@ -140,7 +140,7 @@ export function Footer() {
             förbehållna.
           </p>
           <p>
-            <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-trust align-middle" />
+            <span className="pulse-live mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-trust align-middle" />
             Svarar normalt inom en arbetsdag
           </p>
         </div>

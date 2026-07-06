@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CarCard } from "@/components/CarCard";
+import { CountUp } from "@/components/CountUp";
 import { Reveal } from "@/components/Reveal";
 import { SectionHeader } from "@/components/SectionHeader";
 import { LinkButton } from "@/components/ui";
@@ -220,10 +221,10 @@ export default function Home() {
                     {it.live && (
                       <span
                         aria-hidden="true"
-                        className="h-2 w-2 shrink-0 rounded-full bg-trust shadow-[0_0_10px_1px_var(--color-trust)]"
+                        className="pulse-live h-2 w-2 shrink-0 rounded-full bg-trust"
                       />
                     )}
-                    {it.v}
+                    {it.primary ? <CountUp value={Number(it.v)} /> : it.v}
                   </dd>
                   {/* readout underline — cognac tick on the primary gauge */}
                   <span
@@ -526,7 +527,7 @@ export default function Home() {
                         <p className="mt-4 inline-flex items-center gap-2 text-[0.8rem] text-muted">
                           <span
                             aria-hidden="true"
-                            className="h-2 w-2 rounded-full bg-trust shadow-[0_0_10px_1px_var(--color-trust)]"
+                            className="pulse-live h-2 w-2 rounded-full bg-trust"
                           />
                           Svarar normalt inom en arbetsdag
                         </p>
