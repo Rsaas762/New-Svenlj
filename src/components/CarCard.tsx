@@ -6,7 +6,7 @@ import { formatMileage, formatPrice } from "@/lib/format";
 
 export function CarCard({ car, priority = false }: { car: Car; priority?: boolean }) {
   return (
-    <article className="surface-carbon group relative flex flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:brightness-[1.15] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-cognac has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-page">
+    <article className="surface-carbon group relative flex min-w-0 flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:brightness-[1.15] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-cognac has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-page">
       <div className="relative aspect-[4/3] overflow-hidden bg-carbon">
         <Image
           src={car.images[0]}
@@ -21,7 +21,7 @@ export function CarCard({ car, priority = false }: { car: Car; priority?: boolea
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex min-w-0 flex-1 flex-col p-5">
         <h3 className="font-display text-lg font-semibold tracking-tight text-pearl">
           <Link
             href={`/bilar/${car.slug}`}

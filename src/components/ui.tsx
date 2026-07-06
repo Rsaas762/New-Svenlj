@@ -10,7 +10,7 @@ import type {
 // ── Buttons ──────────────────────────────────────────────────────────
 
 const btnBase =
-  "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-[color,background-color,border-color,box-shadow,filter,transform,opacity] duration-200 disabled:cursor-not-allowed disabled:opacity-60";
+  "btn-cognac inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-[color,background-color,border-color,box-shadow,filter,transform,opacity] duration-200 disabled:cursor-not-allowed disabled:opacity-60";
 
 const btnStyles = {
   // Machined-silver plate: milled bright button, dark ink text

@@ -67,12 +67,12 @@ export function Footer() {
 
           <nav aria-label="Sidfotsmeny">
             <h2 className="eyebrow text-silver">Sidor</h2>
-            <ul className="mt-4 space-y-2.5">
+            <ul className="mt-3 space-y-0.5">
               {navigation.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-sm text-pearl/70 transition-colors hover:text-pearl"
+                    className="inline-flex py-1 text-sm text-pearl/70 transition-colors hover:text-pearl"
                   >
                     {item.label}
                   </Link>
@@ -83,11 +83,11 @@ export function Footer() {
 
           <div>
             <h2 className="eyebrow text-silver">Kontakt</h2>
-            <ul className="mt-4 space-y-2.5 text-sm text-pearl/70">
+            <ul className="mt-3 space-y-0.5 text-sm text-pearl/70">
               <li>
                 <a
                   href={site.phoneHref}
-                  className="transition-colors hover:text-pearl"
+                  className="inline-flex py-1 transition-colors hover:text-pearl"
                 >
                   {site.phone}
                 </a>
@@ -95,12 +95,12 @@ export function Footer() {
               <li>
                 <a
                   href={site.emailHref}
-                  className="transition-colors hover:text-pearl"
+                  className="inline-flex py-1 transition-colors hover:text-pearl"
                 >
                   {site.email}
                 </a>
               </li>
-              <li>
+              <li className="pt-1">
                 {site.address.street}
                 <br />
                 {site.address.zip} {site.address.city}

@@ -36,7 +36,9 @@
 
   --color-cognac: #c98a5c;
   --color-cognac-deep: #b77949;
-  --color-cream: #f3e5d4;
+  --color-cream: #f3e5d4; /* body text on leather */
+  --color-cream-bright: #f8efe2; /* headings / phone on leather */
+  --color-cream-soft: #e6cfb5; /* eyebrow-weight labels on leather */
 
   --color-trust: #3f9857; /* living status light */
   --color-danger: #e06a5f;
@@ -160,7 +162,8 @@ h4 {
 }
 
 /* ── Surfaces ── */
-/* Carbon card (vehicle cards) */
+/* Carbon card (vehicle cards) — every card answers the cursor with the
+   cognac highlight (Startsida v2: ring + glow + inner tint, kept restrained) */
 @utility surface-carbon {
   background-color: #22272c;
   background-image:
@@ -170,6 +173,16 @@ h4 {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-top: 1.5px solid rgba(255, 255, 255, 0.5); /* machined edge (detail #2) */
   box-shadow: 0 14px 28px -16px rgb(0 0 0 / 0.6);
+  transition: box-shadow 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  @media (hover: hover) {
+    &:hover {
+      box-shadow:
+        0 0 0 1.5px color-mix(in srgb, var(--color-cognac) 42%, transparent),
+        0 0 26px -4px color-mix(in srgb, var(--color-cognac) 38%, transparent),
+        inset 0 0 60px -18px color-mix(in srgb, var(--color-cognac) 30%, transparent),
+        0 18px 34px -18px rgb(0 0 0 / 0.6);
+    }
+  }
 }
 /* Solid dark panel (content cards, form containers) — alias of former plate names */
 @utility surface-plate {
@@ -190,7 +203,21 @@ h4 {
   color: #20252a;
   border: 1px solid rgba(255, 255, 255, 0.76);
   background-image: linear-gradient(#f5f7f8, #bdc4c9 58%, #dce1e4);
-  box-shadow: 0 5px 12px rgb(0 0 0 / 0.4), inset 0 1px #fff;
+  --btn-shadow: 0 5px 12px rgb(0 0 0 / 0.4), inset 0 1px #fff;
+  box-shadow: var(--btn-shadow);
+}
+
+/* Cognac hover-highlight for buttons (Startsida v2) — ring + glow on top of
+   the variant's own depth shadow (kept in --btn-shadow where one exists). */
+@utility btn-cognac {
+  @media (hover: hover) {
+    &:hover {
+      box-shadow:
+        0 0 0 1.5px color-mix(in srgb, var(--color-cognac) 42%, transparent),
+        0 0 20px -3px color-mix(in srgb, var(--color-cognac) 38%, transparent),
+        var(--btn-shadow, 0 0 #0000);
+    }
+  }
 }
 
 /* Eyebrow label (wide tracking, echoes the wordmark) */
@@ -214,6 +241,24 @@ h4 {
   }
 }
 
+/* Silver text-link with an arrow that translates on hover */
+@utility lnk {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--color-silver);
+  & .arrow {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  &:hover .arrow {
+    transform: translateX(5px);
+  }
+}
+
 /* Scroll-triggered reveal */
 @utility reveal {
   opacity: 0;
@@ -225,6 +270,59 @@ h4 {
     opacity: 1;
     transform: translateY(0);
   }
+}
+/* Scale-in variant — a distinct entrance for feature moments (featured car,
+   showroom image) so the page doesn't fade every section identically. */
+.reveal-scale {
+  transform: translateY(14px) scale(0.985);
+  transform-origin: center;
+}
+.reveal-scale.is-visible {
+  transform: none;
+}
+/* No-JS / non-scripting crawlers never run the observer — show content
+   rather than shipping a blank section (the reveal enhances a visible base). */
+@media (scripting: none) {
+  .reveal,
+  .reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Hero cinematic drift — a very slow Ken Burns on the full-bleed showroom
+   photo so the hero breathes. Under the scrim it reads as atmosphere, not gloss. */
+@keyframes hero-drift {
+  from { transform: scale(1.03); }
+  to { transform: scale(1.09) translate3d(-1.4%, -0.9%, 0); }
+}
+.hero-drift {
+  animation: hero-drift 30s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-drift {
+    animation: none;
+    transform: scale(1.03);
+  }
+}
+
+/* Instrument cluster "power-on" — the gauge ruler wipes in left→right and the
+   cognac redline drops into place, once on load. The page's signature
+   mechanical beat; the cluster sits above the fold so it's always seen. */
+@keyframes instr-wipe {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes instr-redline-in {
+  from { opacity: 0; transform: translateX(-22px); }
+  to { opacity: 1; transform: none; }
+}
+.instr-ruler {
+  animation: instr-wipe 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.35s both;
+}
+.instr-redline {
+  animation: instr-redline-in 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) 1.15s both;
 }
 
 /* Hero entrance */
@@ -278,6 +376,10 @@ h4 {
   .dial-arc {
     animation: none;
     stroke-dashoffset: 96;
+  }
+  .instr-ruler,
+  .instr-redline {
+    animation: none;
   }
   html {
     scroll-behavior: auto !important;

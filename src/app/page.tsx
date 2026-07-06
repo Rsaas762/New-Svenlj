@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CarCard } from "@/components/CarCard";
-import { HeroSlideshow, type Slide } from "@/components/HeroSlideshow";
 import { Reveal } from "@/components/Reveal";
 import { SectionHeader } from "@/components/SectionHeader";
 import { LinkButton } from "@/components/ui";
 import { carTitle, inStockCars } from "@/lib/cars";
-import { formatPrice } from "@/lib/format";
-import { site, statsConfirmed } from "@/lib/site";
+import { formatMileage, formatPrice } from "@/lib/format";
+import { hoursConfirmed, hoursFallback, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: `${site.name} — Din trygga bilaffär i Svenljunga`,
@@ -21,80 +20,56 @@ export const metadata: Metadata = {
   },
 };
 
-// Hero proof row — the promise before a single scroll
-const proof = ["Lokal bilhandlare", "Fri värdering", "Personlig hjälp"];
-
-const heroSlides: Slide[] = [
+const services = [
   {
-    src: "/hero/showroom-interior.jpg",
-    alt: "Svenljunga Bilcenters ljusa inomhushall med bilar i lager",
-  },
-  {
-    src: "/hero/exterior.jpg",
-    alt: "Svenljunga Bilcenters anläggning på Boråsvägen med bilar utanför",
-  },
-  {
-    src: "/hero/showroom-branding.jpg",
-    alt: "Svenljunga Bilcenters skyltade utställningshall inomhus",
-  },
-];
-
-const journeys = [
-  {
-    title: "Trygg bilaffär",
-    body: "Vi hjälper dig genom hela processen och ser till att du får tydlig information innan du bestämmer dig.",
+    title: "Köp ur vårt lager",
+    body: "Ett märkesoberoende urval av genomgångna bilar. Ta gärna din nuvarande bil i inbyte som del av köpet.",
     cta: "Se bilar i lager",
     href: "/bilar",
   },
   {
-    title: "Sälj bilen smidigt",
-    body: "Skicka in uppgifter om din bil så återkommer vi med en första bedömning och nästa steg.",
+    title: "Sälj din bil till oss",
+    body: "Du får en fri värdering utan förpliktelser. Bor du en bit bort hämtar vi bilen där den står.",
     cta: "Sälj din bil",
     href: "/salj-din-bil",
   },
   {
-    title: "Hitta rätt bil",
-    body: "Letar du efter något särskilt? Berätta vad du söker så hjälper vi dig hitta rätt alternativ.",
-    cta: "Be oss hitta din bil",
-    href: "/hitta-min-bil",
+    title: "Finansiering & garanti",
+    body: "Förmånlig ränta genom Santander och trygga garantipaket via GarantiPartner — vi hjälper dig hela vägen.",
+    cta: "Kontakta oss",
+    href: "/kontakt",
   },
 ];
 
-const services = [
-  {
-    title: "Köp ur vårt lager",
-    body: "Märkesoberoende urval av genomgångna bilar. Ta gärna din nuvarande bil i inbyte.",
-  },
-  {
-    title: "Vi köper din bil",
-    body: "Sälj tryggt och enkelt till oss. Du får en fri värdering utan förpliktelser.",
-  },
-  {
-    title: "Vi hämtar bilen",
-    body: "Bor du en bit bort? Vi hämtar upp bilen där den står vid överenskommen plats.",
-  },
-  {
-    title: "Finansiering",
-    body: "Förmånlig ränta genom Santander Consumer Bank — vi hjälper dig hela vägen.",
-  },
-  {
-    title: "Garanti",
-    body: "Trygga garantipaket via GarantiPartner, anpassade efter bilens ålder och miltal.",
-  },
-  {
-    title: "Rekond",
-    body: "Vi rekonditionerar bilar så att de känns som nya — både våra egna och din.",
-  },
-];
-
-// Partners shown on the smoked-silver trust strip (real, from svenljungabilcenter.se)
+// Real partner logos on the smoked-silver trust strip (from svenljungabilcenter.se).
 const partnerLogos = [
   { name: "Santander Consumer Bank", src: "/partners/santander.png", w: 520, h: 292 },
   { name: "GarantiPartner", src: "/partners/garantipartner.png", w: 360, h: 360 },
   { name: "Blocket", src: "/partners/blocket.png", w: 520, h: 292 },
 ];
 
-/** Thin stitched cognac leather seam — a material transition (detail #8). */
+/** Small map-pin glyph reused in the hero and the visit block. */
+function PinIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+      <circle cx="12" cy="10" r="2.6" />
+    </svg>
+  );
+}
+
+/** Thin stitched cognac-leather seam — a material transition between bands. */
 function LeatherSeam() {
   return (
     <div
@@ -105,219 +80,175 @@ function LeatherSeam() {
 }
 
 export default function Home() {
-  const featured = inStockCars().slice(0, 3);
-  const heroCar = featured[0];
+  const inStock = inStockCars();
+  const lead = inStock[0];
+  const rest = inStock.slice(1, 4);
+
+  const instrument = [
+    { k: "Bilar i lager", v: String(inStock.length), caption: "i lager just nu", primary: true },
+    { k: "Urval", v: "Alla märken", caption: "märkesoberoende" },
+    { k: "Värdering", v: "Kostnadsfri", caption: "utan förpliktelser" },
+    { k: "Svarstid", v: "~1 arbetsdag", caption: "vi hör av oss", live: true },
+  ];
+
+  const leadSpecs = [
+    { label: "Årsmodell", value: String(lead.year) },
+    { label: "Miltal", value: formatMileage(lead.mileageMil) },
+    { label: "Bränsle", value: lead.fuel },
+    { label: "Växellåda", value: lead.gearbox },
+  ];
 
   return (
     <>
-      {/* ── Hero — smoked titanium ──────────────────────────────── */}
-      <section className="bg-titanium relative overflow-hidden">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-28 sm:px-8 lg:grid-cols-[1.06fr_0.94fr] lg:pb-24 lg:pt-40">
-          <div>
-            <p
-              className="eyebrow eyebrow-rule rise-in text-silver"
-              style={{ animationDelay: "0.05s" }}
-            >
-              Din trygga bilaffär · Svenljunga
-            </p>
-            <h1
-              className="font-display rise-in mt-4 text-[2.5rem] font-semibold leading-[1.03] tracking-[-0.03em] text-balance text-pearl sm:text-[3.25rem] lg:text-[3.75rem]"
-              style={{ animationDelay: "0.15s" }}
-            >
-              Köp, sälj eller hitta rätt bil —{" "}
-              <span className="font-medium text-pearl/55">
-                enkelt och tryggt.
-              </span>
-            </h1>
-            <p
-              className="rise-in mt-6 max-w-lg text-[1.0625rem] leading-relaxed text-muted sm:text-[1.1875rem]"
-              style={{ animationDelay: "0.3s" }}
-            >
-              Utforska bilarna i vårt lager eller få en fri värdering.
-              Märkesoberoende och personligt, mitt i Svenljunga.
-            </p>
+      {/* ── Hero — full-bleed cinematic showroom ─────────────────── */}
+      <section className="bg-titanium relative flex min-h-[88vh] items-end overflow-hidden">
+        <Image
+          src="/hero/showroom-interior.jpg"
+          alt="Svenljunga Bilcenters upplysta bilhall med bilar i lager"
+          fill
+          priority
+          sizes="100vw"
+          className="hero-drift object-cover"
+        />
+        {/* Scrim — darkens the lower-left so the type stays legible */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(12,16,19,0.86) 0%, rgba(12,16,19,0.5) 42%, rgba(12,16,19,0.15) 72%, rgba(12,16,19,0.35) 100%), linear-gradient(0deg, rgba(12,16,19,0.92) 2%, rgba(12,16,19,0.2) 40%, transparent 62%)",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 opacity-50 mix-blend-overlay"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 1px, rgba(0,0,0,0.14) 1px 3px)",
+          }}
+        />
+
+        <div className="relative mx-auto w-full max-w-6xl px-5 pb-14 pt-28 sm:px-8 sm:pb-16">
+          <p
+            className="eyebrow eyebrow-rule rise-in text-silver"
+            style={{ animationDelay: "0.05s" }}
+          >
+            Märkesoberoende bilhandlare · Svenljunga
+          </p>
+          <h1
+            className="font-display rise-in mt-4 max-w-[15ch] text-[2.6rem] font-bold leading-[1.0] tracking-[-0.03em] text-balance text-pearl sm:text-[3.5rem] lg:text-[4.4rem]"
+            style={{ animationDelay: "0.15s" }}
+          >
+            Hitta din nästa bil —{" "}
+            <span className="font-medium text-pearl/55">utan krångel.</span>
+          </h1>
+          <p
+            className="rise-in mt-5 max-w-[34rem] text-[1.0625rem] leading-relaxed text-ink-3 sm:text-[1.1875rem]"
+            style={{ animationDelay: "0.3s" }}
+          >
+            Ett genomgånget urval mitt i Svenljunga. Köp, sälj eller ta in din
+            bil i inbyte — och få svar av en människa, inte en växel.
+          </p>
+          <div
+            className="rise-in mt-8 flex flex-wrap items-center gap-3"
+            style={{ animationDelay: "0.45s" }}
+          >
+            <LinkButton href="/bilar" size="lg">
+              Se bilar i lager
+            </LinkButton>
+            <LinkButton href="/salj-din-bil" variant="outline" size="lg">
+              Sälj din bil
+            </LinkButton>
+          </div>
+          <p
+            className="rise-in mt-7 inline-flex items-center gap-2 text-[0.8rem] text-muted"
+            style={{ animationDelay: "0.65s" }}
+          >
+            <PinIcon className="text-silver" /> {site.address.street},{" "}
+            {site.address.zip} {site.address.city}
+          </p>
+        </div>
+      </section>
+
+      {/* ── Instrument cluster — gunmetal binnacle with a gauge ruler ─ */}
+      <section className="bg-gunmetal border-b border-white/10">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="relative">
+            {/* Speedometer-style tick ruler across the top of the cluster */}
             <div
-              className="rise-in mt-8 flex flex-wrap items-center gap-3"
-              style={{ animationDelay: "0.45s" }}
-            >
-              <LinkButton href="/bilar" size="lg">
-                Se bilar i lager
-              </LinkButton>
-              <LinkButton href="/salj-din-bil" variant="outline" size="lg">
-                Sälj din bil
-              </LinkButton>
-              <Link
-                href="/hitta-min-bil"
-                className="text-sm font-semibold text-silver underline-offset-4 hover:text-pearl hover:underline"
-              >
-                Hitta min nästa bil →
-              </Link>
-            </div>
-
-            <ul
-              className="rise-in mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/10 pt-6"
-              style={{ animationDelay: "0.65s" }}
-              aria-label="Det här hjälper vi dig med"
-            >
-              {proof.map((item, i) => (
-                <li
-                  key={item}
-                  className="eyebrow flex items-center gap-4 text-[0.62rem] text-silver/80"
-                >
-                  {i > 0 && (
-                    <span aria-hidden="true" className="text-cognac/70">
-                      ·
-                    </span>
-                  )}
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Photo composition */}
-          <div className="rise-in relative" style={{ animationDelay: "0.35s" }}>
-            {/* instrument-cluster dial motif (detail #3) — hero only */}
-            <svg
               aria-hidden="true"
-              viewBox="0 0 200 200"
-              className="absolute -right-8 -top-12 hidden w-40 sm:block"
-            >
-              <path
-                d="M30 168 A 82 82 0 1 1 170 168"
-                fill="none"
-                stroke="var(--color-silver-mist)"
-                strokeWidth="1.5"
-                pathLength={360}
-                className="opacity-40"
-              />
-              <path
-                d="M30 168 A 82 82 0 1 1 170 168"
-                fill="none"
-                stroke="var(--color-cognac)"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                pathLength={360}
-                className="dial-arc opacity-90"
-              />
-              <line
-                x1="100"
-                y1="150"
-                x2="150"
-                y2="86"
-                stroke="var(--color-ink-2)"
-                strokeWidth="1.5"
-                className="opacity-70"
-              />
-              <circle cx="100" cy="150" r="4" fill="var(--color-ink-2)" className="opacity-70" />
-            </svg>
+              className="instr-ruler pointer-events-none absolute inset-x-0 top-0 h-3.5"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(90deg, rgba(198,203,207,0.55) 0 1px, transparent 1px 13px), repeating-linear-gradient(90deg, rgba(198,203,207,0.8) 0 1.5px, transparent 1.5px 65px)",
+                backgroundSize: "100% 7px, 100% 13px",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "0 0, 0 0",
+                maskImage:
+                  "linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)",
+                WebkitMaskImage:
+                  "linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)",
+              }}
+            />
+            {/* Cognac redline tick — the one warm marker on the scale */}
+            <div
+              aria-hidden="true"
+              className="instr-redline pointer-events-none absolute top-0 hidden h-3.5 w-0.5 bg-cognac min-[940px]:block"
+              style={{ left: "76%", boxShadow: "0 0 8px 1px var(--color-cognac)" }}
+            />
 
-            <div className="relative aspect-[5/4] overflow-hidden rounded-3xl border border-white/10 shadow-card-hover">
-              <HeroSlideshow slides={heroSlides} />
-              <span className="nums absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-3.5 py-1.5 text-xs font-medium text-pearl backdrop-blur-md">
-                <svg
-                  aria-hidden="true"
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+            <dl className="grid grid-cols-1 min-[560px]:grid-cols-2 min-[940px]:grid-cols-4">
+              {instrument.map((it, i) => (
+                <div
+                  key={it.k}
+                  className={`px-2 pb-8 pt-9 sm:px-8 ${
+                    i === 0
+                      ? ""
+                      : "border-t border-white/10 min-[560px]:border-t-0 min-[560px]:[&:nth-child(3)]:border-t min-[940px]:[&:nth-child(3)]:border-t-0 min-[560px]:border-l min-[560px]:[&:nth-child(odd)]:border-l-0 min-[940px]:border-l min-[940px]:[&:nth-child(odd)]:border-l"
+                  }`}
                 >
-                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-                {site.address.street}, {site.address.city}
-              </span>
-            </div>
-
-            {/* floating card: newest real car in stock */}
-            <Link
-              href={`/bilar/${heroCar.slug}`}
-              className="float-card surface-plate-strong group absolute -left-3 bottom-8 z-10 hidden items-center gap-3.5 rounded-2xl p-3 pr-5 transition-[filter,transform] duration-300 hover:-translate-y-0.5 hover:brightness-110 sm:flex lg:-left-8"
-              style={{ animationDelay: "0.9s" }}
-            >
-              <span className="relative block h-14 w-14 shrink-0 overflow-hidden rounded-xl">
-                <Image
-                  src={heroCar.images[0]}
-                  alt=""
-                  fill
-                  sizes="56px"
-                  className="object-cover"
-                />
-              </span>
-              <span className="block">
-                <span className="eyebrow block text-[0.6rem] text-muted">
-                  Ur lagret
-                </span>
-                <span className="font-display block text-sm font-semibold text-pearl">
-                  {carTitle(heroCar)} {heroCar.year}
-                </span>
-                <span className="nums block text-xs text-muted">
-                  {formatPrice(heroCar.priceSek)}
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                className="ml-1 text-silver transition-transform duration-300 group-hover:translate-x-1"
-              >
-                →
-              </span>
-            </Link>
+                  <dt className="eyebrow text-[0.66rem] tracking-[0.22em] text-muted">
+                    {it.k}
+                  </dt>
+                  <dd
+                    className={`nums font-display mt-3 flex items-center gap-2.5 font-bold tracking-[-0.02em] ${
+                      it.primary
+                        ? "text-[2.1rem] text-pearl"
+                        : "text-[1.5rem] text-silver"
+                    }`}
+                  >
+                    {it.live && (
+                      <span
+                        aria-hidden="true"
+                        className="h-2 w-2 shrink-0 rounded-full bg-trust shadow-[0_0_10px_1px_var(--color-trust)]"
+                      />
+                    )}
+                    {it.v}
+                  </dd>
+                  {/* readout underline — cognac tick on the primary gauge */}
+                  <span
+                    aria-hidden="true"
+                    className={`mt-2.5 block h-px w-9 ${
+                      it.primary ? "bg-cognac" : "bg-white/15"
+                    }`}
+                  />
+                  <p className="mt-2.5 text-[0.78rem] text-muted">{it.caption}</p>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
       </section>
 
-      {/* ── Tre sätt — gunmetal ─────────────────────────────────── */}
-      <section className="bg-gunmetal border-y border-white/10">
-        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
-          <SectionHeader
-            onDark
-            eyebrow="Vad vill du göra?"
-            title="Tre sätt vi hjälper dig på"
-          />
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {journeys.map((j, i) => (
-              <Reveal key={j.href} delay={i * 120} className="h-full">
-                <Link
-                  href={j.href}
-                  className="group surface-carbon flex h-full flex-col rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1 hover:brightness-110"
-                >
-                  <h3 className="font-display text-xl font-semibold text-pearl">
-                    {j.title}
-                  </h3>
-                  <p className="mt-3 flex-1 text-[0.9375rem] leading-relaxed text-muted">
-                    {j.body}
-                  </p>
-                  <span className="mt-6 text-sm font-semibold text-silver">
-                    {j.cta}{" "}
-                    <span
-                      aria-hidden="true"
-                      className="inline-block transition-transform duration-300 group-hover:translate-x-1"
-                    >
-                      →
-                    </span>
-                  </span>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <LeatherSeam />
-
-      {/* ── Bilar i lager — carbon ──────────────────────────────── */}
-      <section className="bg-carbon">
+      {/* ── Bilar i lager — carbon, featured + grid ──────────────── */}
+      <section className="bg-carbon" id="lager">
         <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <SectionHeader
               onDark
               eyebrow="Bilar i lager"
-              title="Ett urval ur vårt lager"
-              intro="Alla bilar går igenom vår genomgång innan de säljs. Är du intresserad av en bil? Skicka en förfrågan så återkommer vi."
+              title="Genomgångna bilar, redo att köras"
+              intro="Alla bilar går igenom vår kontroll innan de säljs. Är du intresserad? Skicka en förfrågan så återkommer vi inom en arbetsdag."
             />
             <Reveal delay={150}>
               <LinkButton href="/bilar" variant="outline">
@@ -325,141 +256,297 @@ export default function Home() {
               </LinkButton>
             </Reveal>
           </div>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((car, i) => (
-              <Reveal key={car.slug} delay={i * 120} className="h-full">
-                <CarCard car={car} priority={i < 3} />
+
+          {lead ? (
+            <>
+              {/* Featured wide car — the selected pick from stock */}
+              <Reveal delay={80} className="reveal-scale mt-11">
+                <Link
+                  href={`/bilar/${lead.slug}`}
+                  aria-label={`${carTitle(lead)} ${lead.year} — ${formatPrice(lead.priceSek)}, se bilen`}
+                  className="surface-carbon group grid overflow-hidden rounded-3xl md:grid-cols-[1.15fr_1fr]"
+                >
+                  <div className="relative min-h-[260px] overflow-hidden md:min-h-[340px]">
+                    <Image
+                      src={lead.images[0]}
+                      alt={`${carTitle(lead)} ${lead.year}`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 55vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    />
+                    <span className="nums absolute left-4 top-4 rounded-full bg-black/55 px-3.5 py-1.5 text-xs font-medium text-pearl backdrop-blur-md">
+                      Utvald ur lagret
+                    </span>
+                  </div>
+                  <div className="flex flex-col p-8 sm:p-11">
+                    <p className="eyebrow text-silver">Ur lagret</p>
+                    <h3 className="font-display mt-3 text-[1.85rem] font-bold leading-[1.1] text-pearl">
+                      {carTitle(lead)}
+                    </h3>
+                    {lead.variant && (
+                      <p className="mt-1 text-[0.95rem] text-ink-3">
+                        {lead.variant}
+                      </p>
+                    )}
+                    <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/10 pt-6">
+                      {leadSpecs.map((s) => (
+                        <div key={s.label}>
+                          <dt className="text-[0.78rem] text-muted">{s.label}</dt>
+                          <dd className="nums font-display mt-0.5 text-[0.95rem] font-semibold text-ink-2">
+                            {s.value}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <div className="mt-auto flex items-end justify-between gap-4 pt-7">
+                      <span className="nums font-display text-[1.65rem] font-bold whitespace-nowrap text-pearl">
+                        {formatPrice(lead.priceSek)}
+                      </span>
+                      <span className="lnk text-[0.9rem]">
+                        Se bilen <span className="arrow">→</span>
+                      </span>
+                    </div>
+                  </div>
+                </Link>
               </Reveal>
-            ))}
-          </div>
+
+              {/* Grid of the next three */}
+              {rest.length > 0 && (
+                <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {rest.map((car, i) => (
+                    <Reveal key={car.slug} delay={i * 120} className="h-full">
+                      <CarCard car={car} priority={false} />
+                    </Reveal>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            /* Empty state — no cars in stock (failed refresh or all sold) */
+            <Reveal className="mt-11">
+              <div className="surface-carbon rounded-3xl px-6 py-14 text-center sm:py-16">
+                <h3 className="font-display text-[1.5rem] font-bold text-pearl">
+                  Nya bilar är på väg in
+                </h3>
+                <p className="mx-auto mt-3 max-w-md text-[0.95rem] leading-relaxed text-muted">
+                  Just nu har vi inga bilar publicerade i lagret. Ring oss så hör
+                  vi av oss så snart rätt bil kommer in — eller berätta vad du
+                  söker så letar vi åt dig.
+                </p>
+                <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+                  <LinkButton href="/hitta-min-bil" size="lg">
+                    Be oss hitta din bil
+                  </LinkButton>
+                  <a
+                    href={site.phoneHref}
+                    className="nums font-display px-2 text-[1.05rem] font-semibold text-silver hover:text-pearl"
+                  >
+                    {site.phone}
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+          )}
         </div>
       </section>
 
-      {/* ── Det här erbjuder vi — gunmetal, carbon tiles ────────── */}
+      <LeatherSeam />
+
+      {/* ── Conversion — centred leather plate on titanium ───────── */}
+      <section className="bg-titanium" id="salj">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
+          <Reveal>
+            <div className="bg-leather shadow-card-hover rounded-3xl p-2.5">
+              <div
+                className="leather-stitch rounded-[1.15rem] px-6 py-11 text-center sm:px-10 sm:py-16"
+                style={{ background: "rgba(0,0,0,0.14)" }}
+              >
+                <p className="text-cream-soft text-[0.95rem] font-medium">
+                  Funderar du på att sälja?
+                </p>
+                <h2 className="font-display text-cream-bright mx-auto mt-2 max-w-[16ch] text-[2rem] font-bold leading-[1.08] sm:text-[2.75rem]">
+                  Få en fri värdering av din bil
+                </h2>
+                <p className="text-cream/90 mx-auto mt-4 max-w-[34rem] leading-relaxed">
+                  Skicka in bilens uppgifter så återkommer vi med en första
+                  bedömning — utan krångel och utan förpliktelser.
+                </p>
+                <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                  <LinkButton href="/salj-din-bil" variant="leather" size="lg">
+                    Få en gratis värdering →
+                  </LinkButton>
+                  <a
+                    href={site.phoneHref}
+                    className="nums font-display text-cream-bright px-2 text-[1.05rem] font-bold hover:text-white"
+                  >
+                    {site.phone}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── Så hjälper vi dig — gunmetal service cards ───────────── */}
       <section className="bg-gunmetal border-y border-white/10">
         <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
           <SectionHeader
             onDark
-            eyebrow="Det här erbjuder vi"
-            title="Allt kring bilaffären på ett ställe"
-            intro="Från köp och inbyte till finansiering, garanti och rekond — vi tar hand om hela affären så att du slipper springa mellan olika ställen."
+            eyebrow="Så hjälper vi dig"
+            title="Hela bilaffären på ett ställe"
+            intro="Från köp och inbyte till försäljning, finansiering och garanti — vi tar hand om affären från början till slut, tryggt och personligt."
           />
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((s, i) => (
-              <Reveal key={s.title} delay={(i % 3) * 100} className="h-full">
-                <div className="surface-carbon group flex h-full flex-col rounded-2xl p-7 transition-[filter] duration-300 hover:brightness-110">
-                  <span
-                    aria-hidden="true"
-                    className="nums font-display text-sm font-semibold text-silver/40"
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="font-display mt-2 text-lg font-semibold text-pearl">
-                    {s.title}
+          <div className="mt-11 grid gap-6">
+            {/* Primary service — wider, CTA styled as a pill (the money action) */}
+            <Reveal>
+              <Link
+                href={services[0].href}
+                className="surface-carbon group grid gap-6 rounded-2xl p-8 transition-[box-shadow,transform] duration-300 hover:-translate-y-1 sm:grid-cols-[1.6fr_1fr] sm:items-center sm:p-10"
+              >
+                <div>
+                  <h3 className="font-display text-[1.5rem] font-bold text-pearl">
+                    {services[0].title}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted">
-                    {s.body}
+                  <p className="mt-3 max-w-md text-[0.9375rem] leading-relaxed text-muted">
+                    {services[0].body}
                   </p>
                 </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Varför oss — carbon ─────────────────────────────────── */}
-      <section className="bg-carbon">
-        <div className="mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 lg:grid-cols-2 lg:py-24">
-          <div>
-            <SectionHeader
-              onDark
-              eyebrow="Varför oss?"
-              title="En bilaffär handlar om förtroende"
-              intro="Vi vet att en bilaffär handlar om mer än bara priset. Det handlar om förtroende, tydlighet och att känna sig trygg med sitt val. Därför fokuserar vi på personlig service, enkel kontakt och lösningar som passar dina behov."
-            />
-            <Reveal delay={150}>
-              {statsConfirmed ? (
-                <dl className="mt-10 grid grid-cols-2 gap-8">
-                  <div>
-                    <dt className="text-sm text-muted">År i branschen</dt>
-                    <dd className="nums font-display mt-1 text-4xl font-semibold text-silver">
-                      {site.stats.yearsInBusiness}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm text-muted">Sålda bilar</dt>
-                    <dd className="nums font-display mt-1 text-4xl font-semibold text-silver">
-                      {site.stats.carsSold}
-                    </dd>
-                  </div>
-                </dl>
-              ) : (
-                <ul className="mt-10 space-y-3">
-                  {[
-                    "Märkesoberoende — vi handlar med alla bilmärken",
-                    `Finansiering via ${site.partners.financing}`,
-                    `Garantipaket via ${site.partners.warranty}`,
-                    "Fri värdering när du säljer din bil",
-                  ].map((fact) => (
-                    <li
-                      key={fact}
-                      className="flex items-center gap-3 text-sm text-ink-3"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="h-1.5 w-1.5 shrink-0 rounded-full bg-cognac"
-                      />
-                      {fact}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Reveal>
-          </div>
-
-          <div className="flex flex-col justify-center">
-            <ul className="space-y-6">
-              {[
-                {
-                  title: "Trygghet",
-                  body: "Tydlig information om varje bil och varje affär — inga överraskningar efteråt.",
-                },
-                {
-                  title: "Tydlighet",
-                  body: "Rakt besked om pris, skick och nästa steg. Du vet alltid var du står.",
-                },
-                {
-                  title: "Enkel kontakt",
-                  body: "Ring, mejla eller skicka ett formulär — du får svar av en människa, inte en växel.",
-                },
-              ].map((value, i) => (
-                <Reveal as="li" key={value.title} delay={i * 120}>
-                  <div className="flex gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
+                <div className="sm:flex sm:justify-end">
+                  <span className="btn-machined inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-[0.9rem] font-semibold">
+                    {services[0].cta}
                     <span
                       aria-hidden="true"
-                      className="nums font-display text-2xl font-semibold text-silver"
+                      className="transition-transform duration-300 group-hover:translate-x-1"
                     >
-                      {String(i + 1).padStart(2, "0")}
+                      →
                     </span>
-                    <div>
-                      <h3 className="font-display text-lg font-semibold text-pearl">
-                        {value.title}
-                      </h3>
-                      <p className="mt-1.5 text-sm leading-relaxed text-muted">
-                        {value.body}
-                      </p>
-                    </div>
-                  </div>
+                  </span>
+                </div>
+              </Link>
+            </Reveal>
+
+            {/* Supporting services — the pair beneath */}
+            <div className="grid gap-6 min-[700px]:grid-cols-2">
+              {services.slice(1).map((s, i) => (
+                <Reveal key={s.title} delay={i * 120} className="h-full">
+                  <Link
+                    href={s.href}
+                    className="surface-carbon group flex h-full flex-col rounded-2xl p-8 transition-[box-shadow,transform] duration-300 hover:-translate-y-1"
+                  >
+                    <h3 className="font-display text-[1.3rem] font-bold text-pearl">
+                      {s.title}
+                    </h3>
+                    <p className="mt-3 flex-1 text-[0.9375rem] leading-relaxed text-muted">
+                      {s.body}
+                    </p>
+                    <span className="lnk mt-7 text-[0.9rem]">
+                      {s.cta} <span className="arrow">→</span>
+                    </span>
+                  </Link>
                 </Reveal>
               ))}
-            </ul>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── Trust strip — smoked silver, centred partner logos ──── */}
+      {/* ── Besök oss — carbon, showroom + practical info ────────── */}
+      <section className="bg-carbon border-t border-white/10" id="besok">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
+          <div className="grid items-center gap-11 lg:grid-cols-2">
+            <Reveal>
+              <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-white/10 shadow-card-hover">
+                <Image
+                  src="/hero/showroom-branding.jpg"
+                  alt="Svenljunga Bilcenters skyltade utställningshall inomhus"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
+                />
+              </div>
+            </Reveal>
+            <div>
+              <SectionHeader
+                onDark
+                title="Titta in i Svenljunga"
+                intro="Kom förbi och titta på bilarna i lugn och ro. Vi bjuder på kaffe och ärliga råd — inga påstridiga säljare."
+              />
+              <Reveal delay={120}>
+                <div className="mt-8 grid gap-8 sm:grid-cols-2">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="eyebrow text-silver">Adress</h3>
+                      <p className="mt-2.5 flex items-start gap-2 text-[0.95rem] leading-relaxed text-ink-3">
+                        <span className="mt-1 shrink-0 text-silver">
+                          <PinIcon />
+                        </span>
+                        <span>
+                          {site.address.street}
+                          <br />
+                          {site.address.zip} {site.address.city}
+                        </span>
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="eyebrow text-silver">Kontakt</h3>
+                      <div className="nums mt-1.5 flex flex-col text-[0.95rem] text-ink-3">
+                        <a
+                          href={site.phoneHref}
+                          className="inline-flex w-fit py-1 hover:text-pearl"
+                        >
+                          {site.phone}
+                        </a>
+                        <a
+                          href={site.emailHref}
+                          className="inline-flex w-fit py-1 hover:text-pearl"
+                        >
+                          {site.email}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="eyebrow text-silver">Öppettider</h3>
+                    {hoursConfirmed ? (
+                      <>
+                        <ul className="nums mt-3 flex flex-col gap-2.5 text-[0.9rem] text-ink-3">
+                          {site.hours.map((h) => (
+                            <li
+                              key={h.days}
+                              className="flex justify-between gap-4 border-b border-white/[0.08] pb-2"
+                            >
+                              <span className="whitespace-nowrap">{h.days}</span>
+                              <span className="whitespace-nowrap text-muted">
+                                {h.time}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="mt-4 inline-flex items-center gap-2 text-[0.8rem] text-muted">
+                          <span
+                            aria-hidden="true"
+                            className="h-2 w-2 rounded-full bg-trust shadow-[0_0_10px_1px_var(--color-trust)]"
+                          />
+                          Svarar normalt inom en arbetsdag
+                        </p>
+                      </>
+                    ) : (
+                      <p className="mt-3 text-[0.9rem] leading-relaxed text-ink-3">
+                        {hoursFallback}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Trust strip — smoked silver, partner logos ───────────── */}
       <section className="bg-smoked border-y border-white/10">
-        <div className="mx-auto max-w-6xl px-5 py-4 sm:px-8">
+        <div className="mx-auto max-w-6xl px-5 py-5 sm:px-8">
           <div className="flex flex-col items-center gap-2.5">
             <ul className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
               {partnerLogos.map((p) => (
@@ -481,63 +568,6 @@ export default function Home() {
               Samarbetspartners
             </span>
           </div>
-        </div>
-      </section>
-
-      {/* ── Conversion — leather plate on titanium ──────────────── */}
-      <section className="bg-titanium">
-        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
-          <Reveal>
-            <div className="bg-leather shadow-card-hover rounded-3xl p-2.5">
-              <div className="leather-stitch grid overflow-hidden rounded-[1.15rem] lg:grid-cols-[1.3fr_1fr]">
-                <div className="p-8 sm:p-12">
-                  <p className="eyebrow text-[#e6cfb5]">Funderar du på att sälja?</p>
-                  <h2 className="font-display mt-3 text-[2rem] font-semibold text-[#f8efe2] sm:text-[2.5rem]">
-                    Få en fri värdering av din bil
-                  </h2>
-                  <p className="mt-4 max-w-lg leading-relaxed text-[#ecdcc7]/90">
-                    Skicka in bilens uppgifter så återkommer vi med en första
-                    bedömning — utan krångel och utan förpliktelser.
-                  </p>
-                  <div className="mt-7 flex flex-wrap gap-3">
-                    <LinkButton href="/salj-din-bil" size="lg">
-                      Få en gratis värdering
-                    </LinkButton>
-                    <LinkButton href="/kontakt" variant="outlineOnDark" size="lg">
-                      Kontakta oss
-                    </LinkButton>
-                  </div>
-                </div>
-                <div className="flex flex-col justify-center gap-5 border-t border-[#f0e2cd]/25 bg-black/20 p-8 sm:p-12 lg:border-l lg:border-t-0">
-                  <div>
-                    <h3 className="eyebrow text-[#e6cfb5]/80">Telefon</h3>
-                    <a
-                      href={site.phoneHref}
-                      className="nums font-display mt-1 block text-xl font-semibold text-[#f8efe2] hover:text-white"
-                    >
-                      {site.phone}
-                    </a>
-                  </div>
-                  <div>
-                    <h3 className="eyebrow text-[#e6cfb5]/80">Besök oss</h3>
-                    <p className="mt-1 text-sm text-[#f0e2cd]/85">
-                      {site.address.street}, {site.address.zip}{" "}
-                      {site.address.city}
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="eyebrow text-[#e6cfb5]/80">E-post</h3>
-                    <a
-                      href={site.emailHref}
-                      className="mt-1 block text-sm text-[#f0e2cd]/85 hover:text-white"
-                    >
-                      {site.email}
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Reveal>
         </div>
       </section>
     </>
