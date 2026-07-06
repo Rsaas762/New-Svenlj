@@ -103,7 +103,16 @@ export default async function CarDetailPage({ params }: Props) {
 
       <div className="grid gap-10 lg:grid-cols-[1.5fr_1fr]">
         {/* ── Gallery + description ── */}
-        <div>
+        <div className="relative">
+          {/* Soft silver showroom glow pooling behind the gallery */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 -top-8 -z-10 h-[58%]"
+            style={{
+              background:
+                "radial-gradient(52% 56% at 46% 34%, rgba(198,203,207,0.11), transparent 72%)",
+            }}
+          />
           <Reveal>
             <CarGallery
               images={car.images}

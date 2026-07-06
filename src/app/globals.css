@@ -55,7 +55,10 @@
 }
 
 body {
-  background-color: var(--color-page);
+  /* Charcoal base — never pure black. The metallic ambience lives on the
+     fixed ::before layer below so it reads as showroom lighting, not a
+     scrolling pattern (and dodges iOS background-attachment quirks). */
+  background-color: #0a0c0d;
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-size: 1rem;
@@ -63,6 +66,25 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/* Premium dark-silver showroom atmosphere for every plain background:
+   a silver fade under the navbar, two soft overhead pools, a barely-visible
+   brushed sheen, over a charcoal depth gradient. Fixed to the viewport so
+   opaque sections (hero, footer) simply sit on top of it. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: #0a0c0d;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.008) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, rgba(198, 203, 207, 0.07) 0, transparent 15%),
+    radial-gradient(90% 55% at 22% 0%, rgba(255, 255, 255, 0.055), transparent 58%),
+    radial-gradient(80% 52% at 82% 4%, rgba(150, 162, 172, 0.05), transparent 58%),
+    linear-gradient(180deg, #0b0d0f 0%, #121417 50%, #0a0c0d 100%);
 }
 
 h1,
@@ -184,18 +206,25 @@ h4 {
     }
   }
 }
-/* Solid dark panel (content cards, form containers) — alias of former plate names */
+/* Metal content card (content cards, form containers): charcoal gradient,
+   silver-tinted border, machined top edge + soft inner highlight, deep shadow. */
 @utility surface-plate {
-  background-color: #1b2025;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-top: 1.5px solid rgba(255, 255, 255, 0.42);
-  box-shadow: 0 14px 28px -18px rgb(0 0 0 / 0.55);
+  background-color: #14181c;
+  background-image: linear-gradient(158deg, #1c2126 0%, #14181c 62%, #10141a 100%);
+  border: 1px solid rgba(198, 203, 207, 0.14);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 20px 42px -22px rgb(0 0 0 / 0.66),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 @utility surface-plate-strong {
-  background-color: #1d2329;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: #171c21;
+  background-image: linear-gradient(158deg, #20252b 0%, #171c21 60%, #12161b 100%);
+  border: 1px solid rgba(198, 203, 207, 0.16);
   border-top: 1.5px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 18px 34px -18px rgb(0 0 0 / 0.6);
+  box-shadow:
+    0 24px 48px -22px rgb(0 0 0 / 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
 /* Machined-silver primary button */
