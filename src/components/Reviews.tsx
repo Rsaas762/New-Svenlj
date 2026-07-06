@@ -76,17 +76,17 @@ export function Reviews() {
         </div>
 
         <Reveal delay={100}>
-          <div className="mt-11 gap-6 [column-gap:1.5rem] sm:columns-2 lg:columns-3">
+          <div className="mt-11 grid gap-5 sm:grid-cols-2">
             {r.items.map((it) => (
               <figure
                 key={it.author}
-                className="surface-plate mb-6 flex break-inside-avoid flex-col rounded-2xl p-6"
+                className="surface-plate flex h-full flex-col rounded-2xl p-6 sm:p-7"
               >
                 <Stars n={it.stars} />
-                <blockquote className="mt-3 text-[0.9375rem] leading-relaxed text-ink-3">
+                <blockquote className="mt-4 flex-1 text-[0.95rem] leading-relaxed text-ink-3">
                   “{it.text}”
                 </blockquote>
-                <figcaption className="mt-4 flex items-baseline gap-2 border-t border-white/10 pt-3.5">
+                <figcaption className="mt-5 flex items-baseline gap-2 border-t border-white/10 pt-4">
                   <span className="text-sm font-semibold text-pearl">
                     {it.author}
                   </span>
