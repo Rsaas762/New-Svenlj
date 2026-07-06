@@ -25,8 +25,12 @@ export function CarListing({ cars }: { cars: Car[] }) {
   const [hydrated, setHydrated] = useState(false);
 
   // Restore filters from the URL on mount (deep-links, refresh, back).
+  // Reading the URL (a browser API) once on mount is the legitimate exception to
+  // set-state-in-effect: it syncs from an external system rather than deriving
+  // state, and keeps /bilar statically rendered (no server searchParams).
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
+    /* eslint-disable react-hooks/set-state-in-effect */
     setBrand(p.get("marke") ?? "");
     setMaxPrice(p.get("pris") ?? "");
     setMinYear(p.get("ar") ?? "");
@@ -35,6 +39,7 @@ export function CarListing({ cars }: { cars: Car[] }) {
     const s = p.get("sort");
     if (s === "pris-lag" || s === "pris-hog" || s === "mil-lag") setSort(s);
     setHydrated(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   // Reflect the active filters back into the URL so a filtered view is

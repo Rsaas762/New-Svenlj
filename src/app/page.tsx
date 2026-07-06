@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CarCard } from "@/components/CarCard";
 import { CountUp } from "@/components/CountUp";
 import { Reveal } from "@/components/Reveal";
+import { Reviews } from "@/components/Reviews";
 import { SectionHeader } from "@/components/SectionHeader";
 import { LinkButton } from "@/components/ui";
 import { carTitle, inStockCars } from "@/lib/cars";
@@ -350,6 +351,9 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* ── Social proof — real Google reviews before the ask ────── */}
+      <Reviews />
 
       <LeatherSeam />
 

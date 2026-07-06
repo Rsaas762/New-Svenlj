@@ -55,6 +55,41 @@ export const site = {
     yearsInBusiness: "[ÅR]",
     carsSold: "[ANTAL]",
   },
+
+  // ── Google reviews (REAL — from the dealership's Google Business
+  //    profile, 4,8 av 5 från 70 recensioner). Texts are verbatim Swedish
+  //    originals; never edit their meaning. Star ratings pending owner check.
+  reviews: {
+    rating: "4,8",
+    count: 70,
+    url: "https://www.google.com/maps?cid=1882012767478859486",
+    items: [
+      {
+        author: "Sobe Sobe",
+        stars: 5,
+        timeAgo: "9 mån sedan",
+        text: "Som tjej och helt okunnig inom bilbranschen kände jag mig trygg genom hela köpet. Från att sälja min bil till att köpa en ny av dom. Blev jätte nöjd och kändes ärligt från start.",
+      },
+      {
+        author: "R S",
+        stars: 5,
+        timeAgo: "1 år sedan",
+        text: "En seriös och bra bilhandlare, väldigt trevligt bemötande av Elvis som var duktig och hjälpsam under hela processen tills köp. Jag hade flera timmars restid men efter samtalen kändes det tryggt att åka och köpa bilen utan några överraskningar. Kan varmt rekommendera!",
+      },
+      {
+        author: "Joel Liljeqvist",
+        stars: 5,
+        timeAgo: "7 mån sedan",
+        text: "Dunder bra service av grabbarna på plats! Dom möter verkligen kunden och ger all den service man kan tänka sej! 10/10! Riktigt bra!",
+      },
+      {
+        author: "Turboojesus",
+        stars: 5,
+        timeAgo: "1 år sedan",
+        text: "Vi är jättenöjda. Vårt andra bilköp under två månader hos Svenljunga Bilcenter.",
+      },
+    ],
+  },
 } as const;
 
 /**
@@ -74,6 +109,10 @@ export const statsConfirmed = !Object.values(site.stats).some((v) =>
 /** Fallback shown wherever hours would appear while they're unconfirmed. */
 export const hoursFallback =
   "Ring oss gärna innan besök så ser vi till att rätt person finns på plats.";
+
+/** True once real Google reviews exist. The reviews section hides itself
+ *  entirely until then, so it can never show invented testimonials. */
+export const reviewsConfirmed = site.reviews.items.length > 0;
 
 export const navigation = [
   { label: "Hem", href: "/" },
