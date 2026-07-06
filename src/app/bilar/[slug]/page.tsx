@@ -91,9 +91,14 @@ export default async function CarDetailPage({ params }: Props) {
             </p>
           )}
         </div>
-        <p className="nums font-display shrink-0 whitespace-nowrap text-3xl font-semibold text-pearl sm:text-4xl">
-          {formatPrice(car.priceSek)}
-        </p>
+        <div className="shrink-0">
+          <p className="nums font-display whitespace-nowrap text-3xl font-semibold text-pearl sm:text-4xl">
+            {formatPrice(car.priceSek)}
+          </p>
+          {/* cognac readout-tick — echoes the home instrument cluster's primary
+              reading, marking the price as the decision number */}
+          <span aria-hidden="true" className="mt-2 block h-px w-9 bg-cognac" />
+        </div>
       </div>
 
       <div className="grid gap-10 lg:grid-cols-[1.5fr_1fr]">
