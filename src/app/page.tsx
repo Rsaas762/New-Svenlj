@@ -173,7 +173,7 @@ export default function Home() {
       </section>
 
       {/* ── Instrument cluster — gunmetal binnacle with a gauge ruler ─ */}
-      <section className="bg-gunmetal border-b border-white/10">
+      <section className="bg-gunmetal">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="relative">
             {/* Speedometer-style tick ruler across the top of the cluster */}
@@ -241,6 +241,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Leather seam 1 — under the instrument strip */}
+      <LeatherSeam />
 
       {/* ── Bilar i lager — carbon, featured + grid ──────────────── */}
       <section className="bg-carbon" id="lager">
@@ -355,8 +358,6 @@ export default function Home() {
       {/* ── Social proof — real Google reviews before the ask ────── */}
       <Reviews />
 
-      <LeatherSeam />
-
       {/* ── Conversion — centred leather plate on titanium ───────── */}
       <section className="bg-titanium" id="salj">
         <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
@@ -456,8 +457,11 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Leather seam 2 — above "Titta in i Svenljunga" */}
+      <LeatherSeam />
+
       {/* ── Besök oss — carbon, showroom + practical info ────────── */}
-      <section className="bg-carbon border-t border-white/10" id="besok">
+      <section className="bg-carbon" id="besok">
         <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
           <div className="grid items-center gap-11 lg:grid-cols-2">
             <Reveal>
