@@ -18,12 +18,7 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-carbon text-pearl">
-      {/* saddle-stitch leather seam */}
-      <div
-        aria-hidden="true"
-        className="bg-leather h-2.5 border-y border-dashed border-[#f0e2cd]/50"
-      />
+    <footer className="bg-carbon border-t border-white/10 text-pearl">
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-20">
         <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
           <div>
